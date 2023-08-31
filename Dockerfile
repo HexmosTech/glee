@@ -9,6 +9,8 @@ RUN apt-get update && \
 # Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
+ENV PATH="${PATH}:/root/.poetry/bin"
+
 # Set the working directory
 WORKDIR /app
 
