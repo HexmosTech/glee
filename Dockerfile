@@ -1,17 +1,16 @@
-FROM debian:bullseye-slim as base
+FROM python:3.7
+RUN mkdir /app 
 
-# Install Python 3 and Poetry
-RUN apt-get update && apt-get install -y python3 python3-pip poetry
-
-# Create a virtual environment and activate it
-ENV POETRY_VIRTUALENVS_IN_PROJECT=true
-RUN python3 -m venv /venv
-
-# Install the dependencies defined in pyproject.toml
 WORKDIR /app
-COPY pyproject.toml poetry.lock ./
 
-RUN poetry install
+
+# Copy the pyproject.toml and poetry.lock to the container
+COPY pyproject.toml poetry.lock /app/
+
+ENV PYTHONPATH=${PYTHONPATH}:${PWD} 
+RUN pip3 install poetry
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev
 
 
 
