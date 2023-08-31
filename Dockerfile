@@ -1,6 +1,16 @@
 FROM python:3.7
 RUN mkdir /app 
 
+RUN apt-get update -y \
+    && apt-get install --no-install-recommends -y \
+        build-essential \
+        patchelf \
+        ccache \
+        clang \
+        libfuse-dev \
+        upx \
+
+
 WORKDIR /app
 
 
