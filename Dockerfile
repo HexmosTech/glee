@@ -11,9 +11,6 @@ RUN apt-get update && \
 WORKDIR /app
 
 RUN apt-get update -y \
-    && apt-get install --no-install-recommends -y \
-        python3.9-dev \
-        build-essential \
         patchelf \
         ccache \
         clang \
