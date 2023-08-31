@@ -14,7 +14,7 @@ RUN apt-get update -y \
         patchelf \
         ccache \
         clang \
-        libfuse-dev \
+        libfuse-dev 
 
 # Copy the pyproject.toml and poetry.lock to the container
 COPY pyproject.toml poetry.lock /app/
