@@ -4,6 +4,9 @@ import requests
 import argparse
 import frontmatter
 import markdown
+from markdown.extensions.toc import TocExtension
+from markdown.extensions.fenced_code import FencedCodeExtension
+from markdown.extensions.codehilite import CodeHiliteExtension
 import sys
 from styles import style
 from images import ImgExtExtension
@@ -13,10 +16,12 @@ from bs4 import BeautifulSoup
 import os
 import shutil
 import toml
+from datetime import datetime as date
 
 # Load the TOML file
+config_path= os.path.join(os.path.expanduser('~'), 'glee', 'config.toml')
 
-config = toml.load("config.toml")
+config = toml.load(config_path)
 GHOST_VERSION = config['ghost-configuration']['GHOST_VERSION']
 if GHOST_VERSION == "v5":
     POSTS_API_BASE = f"{config['ghost-configuration']['GHOST_URL']}/api/admin/posts/"
@@ -24,7 +29,7 @@ else:
     POSTS_API_BASE = f"{config['ghost-configuration']['GHOST_URL']}/api/{GHOST_VERSION}/admin/posts/"
 
 S3_BASE_URL = config['aws-s3-configuration']['S3_BASE_URL']
-mdlib = markdown.Markdown(extensions=['toc', 'fenced_code', 'codehilite', ImgExtExtension()])
+mdlib = markdown.Markdown(extensions=[TocExtension(), FencedCodeExtension(), CodeHiliteExtension(), ImgExtExtension()])
 
 def to_html(md):
     start = "<!--kg-card-begin: html-->"
@@ -40,10 +45,11 @@ def get_jwt():
         aud_value = "/admin/"
     else:
         aud_value = f"/{GHOST_VERSION}/admin/"
+    iat = int(date.now().timestamp())
 
     h = {
-        "iat": int(arrow.get().to('Asia/Kolkata').timestamp()),
-        "exp": int(arrow.get().to('Asia/Kolkata').shift(minutes=15).timestamp()),
+        "iat": iat,
+        "exp": iat + 5 * 60,
         "aud": aud_value
     }
     token = jwt.encode(h, bytes.fromhex(secret), algorithm="HS256", headers={"kid": id})
@@ -62,15 +68,21 @@ def get_post_id(slug, headers):
 
 def make_request(token, body, slug):
     headers = {'Authorization': 'Ghost {}'.format(token)}
+   
     pid, updated_at = get_post_id(slug, headers)
+   
     if not pid:
         url = f'{POSTS_API_BASE}?source=html'
         r = requests.post(url, json=body, headers=headers)
+        print(r.json())
         print("Created new post")
     else:
         body['posts'][0]['updated_at'] = updated_at
+       
         url = f'{POSTS_API_BASE}{pid}?source=html'
+       
         r = requests.put(url, json=body, headers=headers)
+        print(r.json())
         print("Updated existing post based on slug")
     
     return

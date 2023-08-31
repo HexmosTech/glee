@@ -1,8 +1,13 @@
 import boto3
 import toml
+import os
 
 # Load the TOML file
-config = toml.load("config.toml")
+
+config_path= os.path.join(os.path.expanduser('~'), 'glee', 'config.toml')
+
+config = toml.load(config_path)
+# config = toml.load("config.toml")
 
 
 ACCESS_KEY_ID = config['aws-s3-configuration']['ACCESS_KEY_ID']
