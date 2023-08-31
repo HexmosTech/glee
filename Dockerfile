@@ -1,18 +1,23 @@
-FROM python:3.7
+FROM debian:bullseye-slim as base
+
 RUN mkdir /app 
+
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+
+WORKDIR /app
 
 RUN apt-get update -y \
     && apt-get install --no-install-recommends -y \
+        python3.9-dev \
         build-essential \
         patchelf \
         ccache \
         clang \
         libfuse-dev \
-        upx \
-
-
-WORKDIR /app
-
 
 # Copy the pyproject.toml and poetry.lock to the container
 COPY pyproject.toml poetry.lock /app/
