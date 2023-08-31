@@ -5,12 +5,14 @@ RUN mkdir /app
 RUN apt-get update && \
     apt-get install -y python3 python3-pip curl && \
     apt-get clean && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 
 WORKDIR /app
 
 RUN apt-get update -y \
+    && apt-get install --no-install-recommends -y \
         patchelf \
         ccache \
         clang \
