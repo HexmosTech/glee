@@ -1,3 +1,4 @@
 glee.build/
 glee.bin
 __pycache__/**
+glee.*/
