@@ -1,0 +1,66 @@
+name: Binary Build And Release
+run-name: ${{ github.actor }} building the binary using nuitka 🚀
+on:
+  push:
+    tags:
+    - '*'
+  workflow_dispatch:
+
+
+jobs:
+  Binary-Build:
+    name: Build binary using nuitka
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Build and run Docker image
+        run: |
+          docker build -t glee:latest .
+          docker run -d --name glee glee:latest
+
+      - name: Copy file from Docker container
+        run: |
+          docker cp glee:/app/glee.bin /tmp/glee.bin 
+
+      - name: Store artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: glee.bin
+          path: /tmp/glee.bin 
+
+  Binary-Release:
+    needs: Binary-Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact from Build job
+        uses: actions/download-artifact@v2
+        with:
+          name: glee.bin
+          path: /tmp
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /tmp/glee.bin
+          asset_name: glee.bin
+          asset_content_type: application/octet-stream
