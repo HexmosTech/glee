@@ -1,21 +1,19 @@
 FROM debian:bullseye-slim as base
 
-# Install essential packages
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip curl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Install Python 3 and Poetry
+RUN apt-get update && apt-get install -y python3 python3-pip poetry
 
-# Install Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
+# Create a virtual environment and activate it
+ENV POETRY_VIRTUALENVS_IN_PROJECT=true
+RUN python3 -m venv /venv
 
-ENV PATH="${PATH}:/root/.poetry/bin"
-
-# Set the working directory
+# Install the dependencies defined in pyproject.toml
 WORKDIR /app
+COPY pyproject.toml poetry.lock ./
 
-# Copy the pyproject.toml and poetry.lock to the container
-COPY pyproject.toml poetry.lock /app/
+RUN poetry install
+
+
 
 # Install dependencies using Poetry
 RUN poetry config virtualenvs.create true && \
