@@ -13,10 +13,13 @@ Enhance your content management using `glee`. Easily publish any Markdown posts 
 `glee` command will read **metadata** from the YAML preface of your Markdown post ([sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1)), convert the post content into HTML, store the content images in AWS S3, and then publish it to your Ghost platform. Set up the `glee` CLI tool with a single command.
 
 ## Benefits
-- Publish markdown into ghost blog post
+- Publish markdown into Ghost blog post
 - Install and configure with minimal effort
-- Store images in s3 for longevity and local previews
-- 100% Free and open source software
+- Store images in S3 for longevity and local previews
+- Create and update posts with a single command
+- Support for syntax highlighting and Table of Contents
+- Collaborate with content writers in your team
+- 100% Free and Open Source Software
 
 ## Installation/Update
 
