@@ -1,7 +1,8 @@
 # glee: Convert Markdown to Ghost Blog 
 
-<!-- <div align="center"> 
-<img src="banner" width="100%" /> -->
+<div align="center"> 
+<img src="assets/glee-readme-banner.png" width="80%" />
+
 [![Binary Build And Release](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml)
 </div>
 
@@ -12,10 +13,13 @@ glee enhances your content management system seamlessly on the Ghost blog platfo
 `glee` command will read **metadata** from the YAML preface of your Markdown post([sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1)), convert the post content into HTML, store the content images in AWS S3, and then publish it to your Ghost platform. Set up the glee CLI tool with a single command.
 
 ## Benefits
-- 
--
--
--
+- Simplify Markdown-to-Ghost Blog Conversion
+- Effortless Installation and Configuration
+- Create and update posts with a single command
+- Efficient Image Content Management using AWS S3
+- Support for syntax highlighting and Table of Contents
+- Collaborate with content writers in your team
+- 100% Free and Open Source Software
 
 ## Installation/Update
 
