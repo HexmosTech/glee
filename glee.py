@@ -19,7 +19,8 @@ import toml
 from datetime import datetime as date
 
 # Load the TOML file
-config_path= os.path.join(os.path.expanduser('~'), 'glee', 'config.toml')
+config_path= os.path.join(os.path.expanduser('~'),'.glee.toml')
+
 
 config = toml.load(config_path)
 GHOST_VERSION = config['ghost-configuration']['GHOST_VERSION']

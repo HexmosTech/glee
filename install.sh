@@ -2,10 +2,9 @@
 #!/bin/bash
 
 GLEE_URL="https://github.com/HexmosTech/glee/releases/latest/download/glee.bin"
-CONFIG_URL="https://raw.githubusercontent.com/HexmosTech/glee/main/config.toml"
+CONFIG_URL="https://raw.githubusercontent.com/HexmosTech/glee/main/.glee.toml"
 
 DEST_DIR=""
-CONFIG_DEST_DIR="$HOME/glee"
 
 if [ "$(uname)" == "Darwin" ]; then
     DEST_DIR="/usr/local/bin/glee"
@@ -35,10 +34,9 @@ fi
 
 sudo chmod +x $DEST_DIR
 
-mkdir -p "$CONFIG_DEST_DIR"
 
 echo "Downloading config.toml..."
-wget -O "$CONFIG_DEST_DIR/config.toml" $CONFIG_URL
+wget -O "$HOME/.glee.toml" $CONFIG_URL
 
 echo "Installation completed successfully!"
-echo "Add the Ghost and S3 configuration in glee/config.toml file"
+echo "Add the Ghost and S3 Configuration in $HOME/.glee.toml file"
