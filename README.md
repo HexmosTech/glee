@@ -13,10 +13,10 @@
 `glee` command will read **metadata** from the YAML preface of your Markdown post ([sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1)), convert the post content into HTML, store the content images in AWS S3, and then publish it to your Ghost platform. Set up the `glee` CLI tool with a single command.
 
 ## Benefits
-- Simply Publish Markdown-to-Ghost Blog
-- Effortless Installation and Configuration
+- Publish markdown into Ghost blog post
+- Install and configure with minimal effort
+- Store images in S3 for longevity and local previews
 - Create and update posts with a single command
-- Efficient Image Content Management using AWS S3
 - Support for syntax highlighting and Table of Contents
 - Collaborate with content writers in your team
 - 100% Free and Open Source Software
@@ -31,9 +31,9 @@ wget -O - https://raw.githubusercontent.com/HexmosTech/glee/main/install.sh | ba
 
 ## Configuration
 
-After the installation, `glee` will create a configuration file([config.toml](https://github.com/HexmosTech/glee/blob/main/config.toml)) in the `glee` folder within your home directory.
+After the installation, `glee` will create a configuration file ([.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml)) in the `glee` folder within your home directory.
 
-Open the configuration file [glee/config.toml](https://github.com/HexmosTech/glee/blob/main/config.toml) and modify the ghost and AWS S3 credential.
+Open the configuration file `$HOME/.glee.toml` and modify the ghost and AWS S3 credential.
 
 ### Ghost Configuration
 #### Ghost Admin API Key
@@ -46,7 +46,7 @@ Admin API keys are used to generate short-lived single-use JSON Web Tokens (JWTs
    </a>
 </p>  
 
-- Save the Custom Integration and Copy the Admin API Key to [config.toml](https://github.com/HexmosTech/glee/blob/main/config.toml) file.
+- Save the Custom Integration and Copy the Admin API Key to [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml) file.
 
  <p align="left">
   <a href="">
@@ -58,6 +58,7 @@ Admin API keys are used to generate short-lived single-use JSON Web Tokens (JWTs
 #### Ghost Version
 Include the Ghost platform version in the TOML file. 
 You can find the version in the Ghost admin settings.
+The version notation is as follows: 'v4' represents version 4, 'v5' represents version 5, and so forth.
  <p align="left">
   <a href="">
   <img alt="img-name" src="assets/ghost -version.png" width="450"> 
@@ -70,7 +71,7 @@ The `GHOST_URL` represents the domain where your Ghost blog is hosted.
 
 ### AWS S3 Configuration
 
-Presently all images in the input post are uploaded to an s3 bucket. We calculate the hash for each image, and use that as the filename in s3. This ensures that each unique image is stored only once in the server and that there are no naming conflicts. Configure the S3 Credentials in the [config.toml](https://github.com/HexmosTech/glee/blob/main/config.toml) file.
+Presently all images in the input post are uploaded to an s3 bucket. We calculate the hash for each image, and use that as the filename in s3. This ensures that each unique image is stored only once in the server and that there are no naming conflicts. Configure the S3 Credentials in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml) file.
 
 Find further [information](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) and [tutorial](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) to learn more about AWS S3.
 
