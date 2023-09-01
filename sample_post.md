@@ -65,6 +65,15 @@ def hello_world():
     print("Hello, world!")
 ```
 
+## Table 
+
+| Name      | Age | Occupation |
+| --------- | --- | ---------- |
+| John      | 30  | Engineer   |
+| Mary      | 25  | Designer   |
+| Richard   | 35  | Teacher    |
+
+
 ## support html
 
 <ul>
@@ -77,3 +86,5 @@ def hello_world():
   </li>
   <li>Milk</li>
 </ul>
+
+
