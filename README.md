@@ -1,7 +1,7 @@
 # glee: Convert Markdown to Ghost Blog 
 
 <div align="center"> 
-<img src="assets/glee-readme-banner.png" width="80%" />
+<img src="assets/glee-readme-banner.png" width="90%" />
 
 [![Binary Build And Release](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml)
 </div>
