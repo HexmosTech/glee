@@ -4,18 +4,21 @@ import os
 
 # Load the TOML file
 
-config_path= os.path.join(os.path.expanduser('~'),'.glee.toml')
+config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
 
 config = toml.load(config_path)
 # config = toml.load("config.toml")
 
 
-ACCESS_KEY_ID = config['aws-s3-configuration']['ACCESS_KEY_ID']
-SECRET_ACCESS_KEY = config['aws-s3-configuration']['SECRET_ACCESS_KEY']
-BUCKET = config['aws-s3-configuration']['BUCKET']
+ACCESS_KEY_ID = config["aws-s3-configuration"]["ACCESS_KEY_ID"]
+SECRET_ACCESS_KEY = config["aws-s3-configuration"]["SECRET_ACCESS_KEY"]
+BUCKET = config["aws-s3-configuration"]["BUCKET"]
 
-session = boto3.Session(aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY)
-s3 = session.resource('s3')
+session = boto3.Session(
+    aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY
+)
+s3 = session.resource("s3")
+
 
 def upload_to_s3(local_filepath, s3_filepath):
     return s3.Bucket(BUCKET).upload_file(local_filepath, s3_filepath)
