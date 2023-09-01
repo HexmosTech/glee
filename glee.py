@@ -7,6 +7,7 @@ import markdown
 from markdown.extensions.toc import TocExtension
 from markdown.extensions.fenced_code import FencedCodeExtension
 from markdown.extensions.codehilite import CodeHiliteExtension
+from markdown.extensions.tables import TableExtension
 import sys
 from styles import style
 from images import ImgExtExtension
@@ -38,6 +39,7 @@ mdlib = markdown.Markdown(
         FencedCodeExtension(),
         CodeHiliteExtension(),
         ImgExtExtension(),
+        TableExtension()
     ]
 )
 
