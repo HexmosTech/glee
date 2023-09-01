@@ -1,52 +1,106 @@
-# glee - A CLI for Ghost blog
+# glee: Convert Markdown to Ghost Blog 
 
-[[_TOC_]]
+<!-- <div align="center"> 
+<img src="banner" width="100%" /> -->
+[![Binary Build And Release](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml)
+</div>
 
-`glee` can publish markdown posts into the Hexmos Journal. The
-command will read **metadata** from the post's YAML preface, 
-convert the post content into HTML and finally push to journal.
+## Overview
 
-## Install
+glee enhances your content management system seamlessly on the Ghost blog platform. Easily convert any Markdown posts into Ghost blog posts.
 
-### Experimental Option 1: Build into a binary
+`glee` command will read **metadata** from the YAML preface of your Markdown post([sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1)), convert the post content into HTML, store the content images in AWS S3, and then publish it to your Ghost platform. Set up the glee CLI tool with a single command.
 
+## Benefits
+- 
+-
+-
+-
+
+## Installation/Update
+
+For Linux/MacOS systems, run the following command to either install or update glee:
+
+```bash
+wget -O - https://raw.githubusercontent.com/HexmosTech/glee/main/install.sh | bash
 ```
-./installbin.sh
-```
 
-After it's done, you can simply do:
+## Configuration
 
-```
+After the installation, glee will create a configuration file([config.toml](https://github.com/HexmosTech/glee/blob/main/config.toml)) in the `glee` folder within your home directory.
+
+Open the configuration file [glee/config.toml](https://github.com/HexmosTech/glee/blob/main/config.toml) and modify the ghost and AWS S3 credential.
+
+### Ghost Configuration
+#### Ghost Admin API Key
+Admin API keys are used to generate short-lived single-use JSON Web Tokens (JWTs), which are then used to authenticate a request(GET,POST,PUT) using Ghost Admin API.
+- Admin API keys can be obtained by creating a new Custom Integration under the Integrations screen in Ghost Admin.
+ <p align="left">
+  <a href="">
+  <img alt="img-name" src="assets/glee-custom-integration.png" width="450"> 
+    <br/>
+   </a>
+</p>  
+
+- Save the Custom Integration and Copy the Admin API Key to [config.toml](https://github.com/HexmosTech/glee/blob/main/config.toml) file.
+
+ <p align="left">
+  <a href="">
+  <img alt="img-name" src="assets/glee-admin-api-edited.jpg" width="450"> 
+    <br/>
+   </a>
+</p>  
+
+#### Ghost Version
+Include the Ghost platform version in the TOML file. 
+You can find the version in the Ghost admin settings.
+ <p align="left">
+  <a href="">
+  <img alt="img-name" src="assets/ghost -version.png" width="450"> 
+    <br/>
+   </a>
+</p>  
+
+#### Ghost URL
+The `GHOST_URL` represents the domain where your Ghost blog is hosted.
+
+### AWS S3 Configuration
+
+Presently all images in the input post are uploaded to an s3 bucket. We calculate the hash for each image, and use that as the filename in s3. This ensures that each unique image is stored only once in the server and that there are no naming conflicts. Configure the S3 Credentials in the [config.toml](https://github.com/HexmosTech/glee/blob/main/config.toml) file.
+
+Find further [information](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) and [tutorial](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) to learn more about AWS S3.
+
+
+
+
+## Usage 
+
+After installation and configuration, you can convert Markdown into a Ghost blog post using the following command:
+
+```bash
 glee your-post.md
 ```
 
-### Option 2: Poetry standard method
+## Markdown Structure
 
-```
-poetry shell
-python glee.py your-post.md
-```
+The Markdown used by glee consists mainly of two parts:
+- A YAML Interface for metadata
+- Content
 
-
-
-Get repo and then run:
-
-```sh
-poetry install
-```
-
-## Usage
-
-```py
-poetry shell
-glee.py sample_post.md
+```markdown
+---
+yaml
+---
+[TOC]
+your content
 ```
 
 ### Example markdown file
 
-See `sample_post.md` for learning how to structure an example post. 
+See [sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1) for learning how to structure an example post. 
 Find additional field reference in [official docs](https://ghost.org/docs/admin-api/#posts).
 
+## Features
 ### Specifying author
 
 The `authors` field in the markdown frontmatter can specify multiple
@@ -69,7 +123,7 @@ friendly fragment as `slug` in your markdown:
 
 Include the string `[TOC]` in your content area:
 
-```
+```markdown
 ---
 yaml
 ---
@@ -77,32 +131,40 @@ yaml
 your content
 ```
 
-### Image handling
-
-Presently all images in the input post are uploaded to an s3 bucket.
-We calculate the hash for each image, and use that as the filename in s3.
-This ensures that each unique image is stored only once in the server and
-that there are no naming conflicts.
-
-TODO: Check whether the hash exists in s3 before we try to upload.
-
 ### Syntax Highlighting
 
 Languages supported: https://pygments.org/languages/
 
 Fenced code blocks docs: https://python-markdown.github.io/extensions/fenced_code_blocks/
 
-## Google doc to markdown conversion
+### Collaboration
+When multiple team members are working simultaneously on the same Ghost blog, they can collaborate seamlessly using any version control system. glee will update the blog content with each `glee` command.
 
-The following tool sort of works:
+## Local Testing
+Clone the repository and test the glee tool locally.
 
-1. Source: https://github.com/Mr0grog/google-docs-to-markdown
-2. Usable demo: https://mr0grog.github.io/google-docs-to-markdown/
+### Option 1: Build into a binary
+Create a local standalone executable using nuitka. run the command:
 
-## TODO
+```bash
+./installbin.sh
+```
+After it's done, you can simply do:
 
-1. Report link on the terminal if published
-1. Test image inclusion, say through base64
-1. List options for staff emails 
-1. Better argument handling for the CLI
-1. More advanced/powerful md library
+```bash
+glee your-post.md
+```
+### Option 2: Poetry standard method
+
+```bash
+poetry shell
+python glee.py your-post.md
+```
+
+### Blog Post about glee
+
+
+## Acknowledgement
+
+- The glee standalone single binary is created using [Nuitka](https://nuitka.net/doc/user-manual.html).
+- glee utilizes the [Ghost Admin API](https://ghost.org/docs/admin-api/) for interaction with the Ghost blog platform.
