@@ -1,17 +1,71 @@
 ---
-title:  'testing glee'
+title:  'testing sample markdown file'
 authors:
 - linz07m@gmail.com
 tags: []
 featured: false
 status: draft
 excerpt: null,
-# feature_image: ./smiley.png
+feature_image: ./smiley.png
 slug: testing-glee
 ---
 
-# Rest of the stuff here!
+# My Simple Markdown File
 
+This is a basic Markdown file with some common formatting elements.
+
+## Headers
+
+You can create headers using the `#` symbol. There are six levels of headers:
+
+# Header 1
+## Header 2
+### Header 3
+#### Header 4
+##### Header 5
+###### Header 6
+
+## Text Formatting
+
+You can make text **bold** using double asterisks or double underscores, and you can make it *italic* using single asterisks or single underscores.
+
+## Lists
+
+### Ordered List
+
+1. Item 1
+2. Item 2
+3. Item 3
+
+### Unordered List
+
+- Item A
+- Item B
+- Item C
+
+## Links
+
+You can create links like this: [glee](https://github.com/HexmosTech/glee).
+
+## Images
+
+You can embed images like this:
+
+![sticky](./sticky.jpg)
+![Markdown Logo](https://markdown-here.com/img/icon256.png)
+
+## Code
+
+You can include inline code using backticks (`) like `code`.
+
+For code blocks, use triple backticks (```):
+
+```python
+def hello_world():
+    print("Hello, world!")
+```
+
+## support html
 
 <ul>
   <li>Coffee</li>
@@ -21,7 +75,5 @@ slug: testing-glee
       <li>Green tea</li>
     </ul>
   </li>
-  <li>Milky</li>
+  <li>Milk</li>
 </ul>
-
-
