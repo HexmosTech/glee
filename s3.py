@@ -4,10 +4,13 @@ import os
 
 # Load the TOML file
 
-config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
+try:
+    config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
+    config = toml.load(config_path)
+except:
+    print(f"The configuration file at {config_path} was not found.")
+    exit(0)
 
-config = toml.load(config_path)
-# config = toml.load("config.toml")
 
 
 ACCESS_KEY_ID = config["aws-s3-configuration"]["ACCESS_KEY_ID"]

@@ -20,8 +20,12 @@ import toml
 from datetime import datetime as date
 
 # Load the TOML file
-config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
-config = toml.load(config_path)
+try:
+    config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
+    config = toml.load(config_path)
+except:
+    print(f"The configuration file at {config_path} was not found.")
+    exit(0)
 
 
 GHOST_VERSION = config["ghost-configuration"]["GHOST_VERSION"]
