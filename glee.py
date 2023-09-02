@@ -103,7 +103,7 @@ def make_request(token, body, slug):
     if not pid:
         url = f"{POSTS_API_BASE}?source=html"
         r = requests.post(url, json=body, headers=headers)
-        print(r.json())
+        # print(r.json())
         print("Created new post")
     else:
         body["posts"][0]["updated_at"] = updated_at
@@ -111,7 +111,7 @@ def make_request(token, body, slug):
         url = f"{POSTS_API_BASE}{pid}?source=html"
 
         r = requests.put(url, json=body, headers=headers)
-        print(r.json())
+        # print(r.json())
         print("Updated existing post based on slug")
 
     return
