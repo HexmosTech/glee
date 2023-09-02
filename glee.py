@@ -18,14 +18,17 @@ import os
 import shutil
 import toml
 from datetime import datetime as date
+from handle_config import get_toml_file
+
+
 
 # Load the TOML file
 try:
     config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
     config = toml.load(config_path)
 except:
-    print(f"The configuration file at {config_path} was not found.")
-    exit(0)
+        get_toml_file(config_path)
+        sys.exit(0)
 
 
 GHOST_VERSION = config["ghost-configuration"]["GHOST_VERSION"]
@@ -33,7 +36,7 @@ GHOST_VERSION = config["ghost-configuration"]["GHOST_VERSION"]
 if GHOST_VERSION == "":
     msg=f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
     print(msg)
-    exit(0)
+    sys.exit(0)
 
 
 if GHOST_VERSION == "v5":
@@ -47,7 +50,7 @@ S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
 if S3_BASE_URL == "":
     msg=f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
     print(msg)
-    exit(0)
+    sys.exit(0)
 mdlib = markdown.Markdown(
     extensions=[
         TocExtension(),
@@ -71,7 +74,7 @@ def get_jwt():
     if key == "":
         msg=f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
         print(msg)
-        exit(0)
+        sys.exit(0)
     id, secret = key.split(":")
     if GHOST_VERSION == "v5":
         aud_value = "/admin/"
@@ -184,12 +187,12 @@ if __name__ == "__main__":
         print("Usage: glee.py <path_to_markdown_file>")
         # print("Trying to read 'sample_post.md'")
         # post = frontmatter.load("sample_post.md")
-        exit(0)
+        sys.exit(0)
     elif len(sys.argv) == 2:
         post = frontmatter.load(sys.argv[1])
     else:
         print("Usage: glee.py <path_to_markdown_file>")
-        exit(0)
+        sys.exit(0)
     # print(post.metadata)
     # print(post.content)
     post_to_ghost(post.metadata, post.content)
