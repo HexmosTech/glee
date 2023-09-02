@@ -21,20 +21,19 @@ from datetime import datetime as date
 from handle_config import get_toml_file
 
 
-
 # Load the TOML file
 try:
     config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
     config = toml.load(config_path)
 except:
-        get_toml_file(config_path)
-        sys.exit(0)
+    get_toml_file(config_path)
+    sys.exit(0)
 
 
 GHOST_VERSION = config["ghost-configuration"]["GHOST_VERSION"]
 
 if GHOST_VERSION == "":
-    msg=f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
+    msg = f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
     print(msg)
     sys.exit(0)
 
@@ -48,7 +47,7 @@ else:
 
 S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
 if S3_BASE_URL == "":
-    msg=f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
+    msg = f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
     print(msg)
     sys.exit(0)
 mdlib = markdown.Markdown(
@@ -57,7 +56,7 @@ mdlib = markdown.Markdown(
         FencedCodeExtension(),
         CodeHiliteExtension(),
         ImgExtExtension(),
-        TableExtension()
+        TableExtension(),
     ]
 )
 
@@ -72,7 +71,7 @@ def to_html(md):
 def get_jwt():
     key = config["ghost-configuration"]["ADMIN_API_KEY"]
     if key == "":
-        msg=f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
+        msg = f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
         print(msg)
         sys.exit(0)
     id, secret = key.split(":")

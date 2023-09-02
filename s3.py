@@ -2,15 +2,16 @@ import boto3
 import toml
 import os
 import sys
+
 # Load the TOML file
 from handle_config import get_toml_file
+
 try:
     config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
     config = toml.load(config_path)
 except:
-        get_toml_file(config_path)
-        sys.exit(0)
-
+    get_toml_file(config_path)
+    sys.exit(0)
 
 
 ACCESS_KEY_ID = config["aws-s3-configuration"]["ACCESS_KEY_ID"]
