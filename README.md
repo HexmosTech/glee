@@ -31,7 +31,7 @@ wget -O - https://raw.githubusercontent.com/HexmosTech/glee/main/install.sh | ba
 
 ## Configuration
 
-After the installation, `glee` will create a configuration file ([.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml)) in the `glee` folder within your home directory.
+After the installation, `glee` will create a configuration file ([.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml))in your home directory.
 
 Open the configuration file `$HOME/.glee.toml` and modify the ghost and AWS S3 credential.
 
