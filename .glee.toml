@@ -2,7 +2,7 @@
 
 [ghost-configuration]
 ADMIN_API_KEY = "" 
-GHOST_VERSION = "v5"  # eg: v5,v4...
+GHOST_VERSION = ""  # eg: v5,v4...
 GHOST_URL =""
 
 [aws-s3-configuration]
