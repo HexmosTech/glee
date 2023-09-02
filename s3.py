@@ -4,7 +4,7 @@ import os
 import sys
 
 # Load the TOML file
-from handle_config import get_toml_file,crediential_not_found
+from handle_config import get_toml_file, crediential_not_found
 
 try:
     config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")

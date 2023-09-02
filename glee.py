@@ -18,7 +18,7 @@ import os
 import shutil
 import toml
 from datetime import datetime as date
-from handle_config import get_toml_file,crediential_not_found
+from handle_config import get_toml_file, crediential_not_found
 
 
 # Load the TOML file
