@@ -4,7 +4,7 @@ import os
 import sys
 
 # Load the TOML file
-from handle_config import get_toml_file
+from handle_config import get_toml_file,crediential_not_found
 
 try:
     config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
@@ -15,6 +15,8 @@ except:
 
 
 ACCESS_KEY_ID = config["aws-s3-configuration"]["ACCESS_KEY_ID"]
+if ACCESS_KEY_ID == "":
+    crediential_not_found(config_path)
 SECRET_ACCESS_KEY = config["aws-s3-configuration"]["SECRET_ACCESS_KEY"]
 BUCKET = config["aws-s3-configuration"]["BUCKET"]
 

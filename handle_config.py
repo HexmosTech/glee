@@ -1,5 +1,5 @@
 import requests
-
+import sys
 
 def get_toml_file(config_path):
     print(f"The configuration file at {config_path} was not found.")
@@ -18,3 +18,8 @@ def get_toml_file(config_path):
 
         else:
             print(f"Failed to create the configuration file")
+
+def crediential_not_found(config_path):
+    msg = f"Include the Ghost and AWS S3 configurations in the file located at {config_path}"
+    print(msg)
+    sys.exit(0)
