@@ -12,7 +12,7 @@ slug: testing-glee
 
 # My Simple Markdown File
 
-This is a basic Markdown file with some common formatting elements.
+This is  basic Markdown file with some common formatting elements.
 
 ## Headers
 
