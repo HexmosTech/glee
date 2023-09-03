@@ -37,7 +37,7 @@ Open the configuration file `$HOME/.glee.toml` and modify the ghost and AWS S3 c
 
 ### Ghost Configuration
 #### Ghost Admin API Key
-Admin API keys are used to generate short-lived single-use JSON Web Tokens (JWTs), which are then used to authenticate a request(GET,POST,PUT) using Ghost Admin API.
+Admin API keys are used to generate short-lived single-use JSON Web Tokens (JWTs), which are then used to authenticate a request (GET,POST,PUT) using Ghost Admin API.
 - Admin API keys can be obtained by creating a new Custom Integration under the Integrations screen in Ghost Admin.
  <p align="left">
   <a href="">

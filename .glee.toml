@@ -1,12 +1,17 @@
 # refer https://github.com/HexmosTech/glee#configuration for configuration details
 
-[ghost-configuration]
-ADMIN_API_KEY = "" 
-GHOST_VERSION = ""  # eg: v5,v4...
-GHOST_URL =""
+[ghost-configuration] 
+ADMIN_API_KEY = ""   # eg: 5c5d4dfce3q:1ec32we4d5w7cq  refer: https://ghost.org/docs/admin-api/#permissions
 
-[aws-s3-configuration]
-ACCESS_KEY_ID = ""
-SECRET_ACCESS_KEY = ""
-BUCKET = ""
-S3_BASE_URL = ""
+GHOST_VERSION = ""   # eg: v5,v4...  refer: https://github.com/HexmosTech/glee#ghost-version
+
+GHOST_URL =""        # eg: https://ghost-hosted-url/ghost 
+
+[aws-s3-configuration]      # refer: https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html
+ACCESS_KEY_ID = ""          # eg: UZNN442KVSB7AQTOIAW2 refer: https://objectivefs.com/howto/how-to-get-amazon-s3-keys
+
+SECRET_ACCESS_KEY = ""      # eg: 2gP5NeQ2KLkcKLkcPyRqhmzY3WSK2I+GmI/T4qQ255  refer:https://objectivefs.com/howto/how-to-get-amazon-s3-keys 
+
+BUCKET = ""                 # eg: sample-fefwdedea
+
+S3_BASE_URL = ""            # eg: https://sample-fefwdedea.s3.ap-south-1.amazonaws.com/  refer: https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html
