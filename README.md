@@ -1,4 +1,4 @@
-# glee: Publish Markdown to Ghost Blog 
+# glee: Publish Markdown Files to Ghost Blog 
 
 <div align="center"> 
 <img src="assets/glee-readme-banner.png" width="90%" />
@@ -13,7 +13,7 @@
 `glee` command will read **metadata** from the YAML preface of your Markdown post ([sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1)), convert the post content into HTML, store the content images in AWS S3, and then publish it to your Ghost platform. Set up the `glee` CLI tool with a single command.
 
 ## Benefits
-- Publish markdown into Ghost blog post
+- Publish markdown files into Ghost blog post
 - Install and configure with minimal effort
 - Store images in S3 for longevity and local previews
 - Create and update posts with a single command
@@ -80,15 +80,15 @@ Find further [information](https://docs.aws.amazon.com/AmazonS3/latest/userguide
 
 ## Usage 
 
-After installation and configuration, you can convert Markdown into a Ghost blog post using the following command:
+After installation and configuration, you can convert Markdown file into a Ghost blog post using the following command:
 
 ```bash
 glee your-post.md
 ```
 
-## Markdown Structure
+## Markdown File Structure
 
-The Markdown used by `glee` consists mainly of two parts:
+The Markdown file used by `glee` consists mainly of two parts:
 - A YAML Interface for metadata
 - Content
 
