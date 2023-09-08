@@ -177,6 +177,7 @@ python glee.py your-post.md
 
 ### Blog Post about glee
 
+[glee for Ghost: Why we abandoned the Web Editor and Adopted Markdown Files](https://journal.hexmos.com/glee/)
 
 ## Acknowledgement
 
