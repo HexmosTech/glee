@@ -1,12 +1,13 @@
 ---
 title:  'testing sample markdown file'
 authors:
-- linz07m@gmail.com
+- sample@gmail.com
 tags: []
 featured: false
 status: draft
 excerpt: null,
 feature_image: ./smiley.png
+sidebar_toc: true
 slug: testing-glee
 ---
 

@@ -126,7 +126,11 @@ friendly fragment as `slug` in your markdown:
 
 ### Automatically generate Table of Contents (TOC)
 
-Include the string `[TOC]` in your content area:
+`glee` support two kinds of TOC.
+
+1. TOC in Content
+
+For Adding TOC include the string `[TOC]` in your content area:
 
 ```markdown
 ---
@@ -135,6 +139,11 @@ yaml
 [TOC]
 your content
 ```
+2. TOC as Sidebar
+
+The YAML field `sidebar_toc` determines including sidebar table of content. Pick `sidebar_toc:true` or `sidebar_toc:false` as required.
+
+
 
 ### Syntax Highlighting
 

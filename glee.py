@@ -9,7 +9,7 @@ from markdown.extensions.fenced_code import FencedCodeExtension
 from markdown.extensions.codehilite import CodeHiliteExtension
 from markdown.extensions.tables import TableExtension
 import sys
-from styles import style
+from styles import style, sidebar_toc_head, sidebar_toc_footer
 from images import ImgExtExtension
 from hasher import sha256sum
 from s3 import upload_to_s3
@@ -165,7 +165,12 @@ def post_to_ghost(meta, md):
             "ERROR: Include a URL friendly slug field in your markdown file and retry! This is required to support updates"
         )
         return
-    meta["codeinjection_head"] = style
+
+    if meta["sidebar_toc"]:
+        meta["codeinjection_head"] = style + sidebar_toc_head
+        meta["codeinjection_foot"] = sidebar_toc_footer
+    else:
+        meta["codeinjection_head"] = style
     meta["html"] = to_html(md)
     upload_feature_image(meta)
     local_to_s3 = upload_images()
