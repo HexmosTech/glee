@@ -1,16 +1,18 @@
 ---
 title:  'testing sample markdown file'
 authors:
-- sample@gmail.com
+- linz07m@gmail.com
 tags: []
 featured: false
 status: draft
 excerpt: null,
 feature_image: ./smiley.png
 sidebar_toc: true
+upload_images_to_s3: false
 slug: testing-glee
 ---
 
+[TOC]
 # My Simple Markdown File
 
 This is  basic Markdown file with some common formatting elements.
@@ -54,6 +56,9 @@ You can embed images like this:
 
 ![sticky](./sticky.jpg)
 ![Markdown Logo](https://markdown-here.com/img/icon256.png)
+![smiley](./smiley.png)
+
+![sticky-cropped](./sticky-cropped.jpg)
 
 ## Code
 

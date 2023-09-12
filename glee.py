@@ -19,7 +19,7 @@ import shutil
 import toml
 from datetime import datetime as date
 from handle_config import get_toml_file, crediential_not_found
-
+from ghost_upload_image import upload_to_ghost, get_images_from_post
 
 # Load the TOML file
 try:
@@ -44,6 +44,7 @@ else:
     )
 
 S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
+
 if S3_BASE_URL == "":
     crediential_not_found(config_path)
 
@@ -86,17 +87,18 @@ def get_post_id(slug, headers):
     r = requests.get(url, headers=headers)
     if r.ok:
         j = r.json()
-        return (j["posts"][0]["id"], j["posts"][0]["updated_at"])
+        return (
+            j["posts"][0]["id"],
+            j["posts"][0]["updated_at"],
+            j["posts"][0]["mobiledoc"],
+            j["posts"][0]["feature_image"],
+        )
 
     else:
         return (None, None)
 
 
-def make_request(token, body, slug):
-    headers = {"Authorization": "Ghost {}".format(token)}
-
-    pid, updated_at = get_post_id(slug, headers)
-
+def make_request(headers, body, pid, updated_at):
     if not pid:
         url = f"{POSTS_API_BASE}?source=html"
         r = requests.post(url, json=body, headers=headers)
@@ -114,28 +116,52 @@ def make_request(token, body, slug):
     return
 
 
-def upload_images():
-    local_to_s3 = {}
-    for i in mdlib.images:
-        if i.startswith("http://") or i.startswith("https://"):
-            iext = i.split(".")[-1]
-            tp = "/tmp/img." + iext
-            response = requests.get(i, stream=True)
-            with open(tp, "wb") as out_file:
-                shutil.copyfileobj(response.raw, out_file)
-            del response
-            s3fname_base = sha256sum(tp)
+def image_to_hash(image):
+    tp = ""
+    if image.startswith("http://") or image.startswith("https://"):
+        iext = image.split(".")[-1]
+        tp = "/tmp/img." + iext
+        response = requests.get(image, stream=True)
+        with open(tp, "wb") as out_file:
+            shutil.copyfileobj(response.raw, out_file)
+        del response
+        hash_value = sha256sum(tp)
+    else:
+        hash_value = sha256sum(image)
+    _, file_extension = os.path.splitext(image)
+    image_name = hash_value + file_extension
+    return image_name, tp
+
+
+def upload_images(token, html_data, images_to_s3):
+    # add two options s3 or ghost upload
+    uploaded_images = {}
+    if images_to_s3 == False:
+        blog_image_list = get_images_from_post(html_data)
+
+    for image in mdlib.images:
+        hash_value, image_data = image_to_hash(image)
+
+        if image.startswith("http://") or image.startswith("https://"):
+            if images_to_s3 == True:
+                upload_to_s3(image_data, hash_value)
+                image_link = f"{S3_BASE_URL}{hash_value}"
+            else:
+                # image comparison here
+                image_link = upload_to_ghost(
+                    token, image_data, hash_value, blog_image_list
+                )
+
         else:
-            s3fname_base = sha256sum(i)
-        _, file_extension = os.path.splitext(i)
-        s3name = s3fname_base + file_extension
-        if i.startswith("http://") or i.startswith("https://"):
-            upload_to_s3(tp, s3name)
-        else:
-            upload_to_s3(i, s3name)
-        local_to_s3[i] = f"{S3_BASE_URL}{s3name}"
-    print("Uploaded images to s3")
-    return local_to_s3
+            if images_to_s3 == True:
+                upload_to_s3(image, hash_value)
+                image_link = f"{S3_BASE_URL}{hash_value}"
+            else:
+                image_link = upload_to_ghost(token, image, hash_value, blog_image_list)
+
+        uploaded_images[image] = image_link
+    print("Uploaded images")
+    return uploaded_images
 
 
 def replace_image_links(post, img_map):
@@ -146,16 +172,26 @@ def replace_image_links(post, img_map):
     post["html"] = result
 
 
-def upload_feature_image(meta):
+def upload_feature_image(meta, token, feature_image):
     try:
         i = meta["feature_image"]
+        hash_value = sha256sum(i)
         _, file_extension = os.path.splitext(i)
-        s3fname_base = sha256sum(i)
-        s3name = s3fname_base + file_extension
-        upload_to_s3(i, s3name)
-        meta["feature_image"] = f"{S3_BASE_URL}{s3name}"
+        image_name = hash_value + file_extension
+
+        if meta["upload_images_to_s3"] == True:
+            upload_to_s3(i, image_name)
+            meta["feature_image"] = f"{S3_BASE_URL}{image_name}"
+        else:
+            if feature_image is not None:
+                feature_img_list = [feature_image]
+            else:
+                feature_img_list = []
+            image_link = upload_to_ghost(token, i, image_name, feature_img_list)
+            meta["feature_image"] = image_link
         print("Uploaded feature image")
     except Exception as e:
+        print("Error in feature image uploading", e)
         pass
 
 
@@ -172,13 +208,19 @@ def post_to_ghost(meta, md):
     else:
         meta["codeinjection_head"] = style
     meta["html"] = to_html(md)
-    upload_feature_image(meta)
-    local_to_s3 = upload_images()
-    replace_image_links(meta, local_to_s3)
-    post_obj = meta
     token = get_jwt()
+
+    headers = {"Authorization": "Ghost {}".format(token)}
+    pid, updated_at, html_data, feature_image = get_post_id(meta["slug"], headers)
+
+    upload_feature_image(meta, token, feature_image)
+
+    uploaded_images = upload_images(token, html_data, meta["upload_images_to_s3"])
+    replace_image_links(meta, uploaded_images)
+    post_obj = meta
+
     body = {"posts": [post_obj]}
-    return make_request(token, body, meta["slug"])
+    return make_request(headers, body, pid, updated_at)
 
 
 if __name__ == "__main__":
@@ -194,4 +236,5 @@ if __name__ == "__main__":
         sys.exit(0)
     # print(post.metadata)
     # print(post.content)
+
     post_to_ghost(post.metadata, post.content)

@@ -16,6 +16,7 @@ boto3 = "^1.22.1"
 beautifulsoup4 = "^4.11.1"
 toml = "^0.10.2"
 markdown = "2.6.11"
+requests-toolbelt = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 
