@@ -18,7 +18,7 @@ import os
 import shutil
 import toml
 from datetime import datetime as date
-from handle_config import get_toml_file, crediential_not_found
+from handle_config import get_toml_file, ghost_crediential_not_found
 from ghost_upload_image import upload_to_ghost, get_images_from_post
 
 # Load the TOML file
@@ -33,7 +33,7 @@ except:
 GHOST_VERSION = config["ghost-configuration"]["GHOST_VERSION"]
 
 if GHOST_VERSION == "":
-    crediential_not_found(config_path)
+    ghost_crediential_not_found(config_path)
 
 
 if GHOST_VERSION == "v5":
@@ -45,8 +45,8 @@ else:
 
 S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
 
-if S3_BASE_URL == "":
-    crediential_not_found(config_path)
+# if S3_BASE_URL == "":
+#     ghost_crediential_not_found(config_path)
 
 mdlib = markdown.Markdown(
     extensions=[
@@ -69,7 +69,7 @@ def to_html(md):
 def get_jwt():
     key = config["ghost-configuration"]["ADMIN_API_KEY"]
     if key == "":
-        crediential_not_found(config_path)
+        ghost_crediential_not_found(config_path)
     id, secret = key.split(":")
     if GHOST_VERSION == "v5":
         aud_value = "/admin/"
