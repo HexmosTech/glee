@@ -44,6 +44,7 @@ else:
     )
 
 S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
+IMAGE_BACKEND = config["image-configuration"]["IMAGE_BACKEND"]
 
 # if S3_BASE_URL == "":
 #     ghost_crediential_not_found(config_path)
@@ -133,17 +134,17 @@ def image_to_hash(image):
     return image_name, tp
 
 
-def upload_images(token, html_data, images_to_s3):
+def upload_images(token, html_data, IMAGE_BACKEND):
     # add two options s3 or ghost upload
     uploaded_images = {}
-    if images_to_s3 == False:
+    if IMAGE_BACKEND == "ghost":
         blog_image_list = get_images_from_post(html_data)
 
     for image in mdlib.images:
         hash_value, image_data = image_to_hash(image)
 
         if image.startswith("http://") or image.startswith("https://"):
-            if images_to_s3 == True:
+            if IMAGE_BACKEND == "s3":
                 upload_to_s3(image_data, hash_value)
                 image_link = f"{S3_BASE_URL}{hash_value}"
             else:
@@ -153,7 +154,7 @@ def upload_images(token, html_data, images_to_s3):
                 )
 
         else:
-            if images_to_s3 == True:
+            if IMAGE_BACKEND == "s3":
                 upload_to_s3(image, hash_value)
                 image_link = f"{S3_BASE_URL}{hash_value}"
             else:
@@ -179,7 +180,7 @@ def upload_feature_image(meta, token, feature_image):
         _, file_extension = os.path.splitext(i)
         image_name = hash_value + file_extension
 
-        if meta["upload_images_to_s3"] == True:
+        if IMAGE_BACKEND == "s3":
             upload_to_s3(i, image_name)
             meta["feature_image"] = f"{S3_BASE_URL}{image_name}"
         else:
@@ -215,7 +216,7 @@ def post_to_ghost(meta, md):
 
     upload_feature_image(meta, token, feature_image)
 
-    uploaded_images = upload_images(token, html_data, meta["upload_images_to_s3"])
+    uploaded_images = upload_images(token, html_data, IMAGE_BACKEND)
     replace_image_links(meta, uploaded_images)
     post_obj = meta
 

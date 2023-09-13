@@ -8,7 +8,6 @@ status: draft
 excerpt: null,
 feature_image: ./smiley.png
 sidebar_toc: true
-upload_images_to_s3: false
 slug: testing-glee
 ---
 
