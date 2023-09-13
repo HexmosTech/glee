@@ -8,7 +8,7 @@ import sys
 from handle_config import get_toml_file, ghost_crediential_not_found
 
 
-def upload_to_ghost(token, image, hash_name, blog_image_list):
+def upload_to_ghost(token, image, hash_name, blog_image_list, logging):
     try:
         config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
         config = toml.load(config_path)
@@ -35,7 +35,7 @@ def upload_to_ghost(token, image, hash_name, blog_image_list):
             image_name = name.split("/")[-1]
             hash_value = hash_name.split(".")[0]
             if hash_value in image_name:
-                print(f"The image already exists and is being reused.")
+                logging.debug(f"The image {name} already exists and is being reused.")
                 return name
 
         mulit_encoder = MultipartEncoder(
@@ -57,10 +57,10 @@ def upload_to_ghost(token, image, hash_name, blog_image_list):
         result = response.json()
 
         image_link = result["images"][0]["url"]
-        print("The image has been uploaded into Ghost.")
+        logging.debug(f"The image {image_link} has been uploaded into Ghost.")
         return image_link
     except Exception as e:
-        pass
+        logging.error(e)
 
 
 def get_images_from_post(post):

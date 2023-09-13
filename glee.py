@@ -20,6 +20,7 @@ import toml
 from datetime import datetime as date
 from handle_config import get_toml_file, ghost_crediential_not_found
 from ghost_upload_image import upload_to_ghost, get_images_from_post
+import logging
 
 # Load the TOML file
 try:
@@ -100,19 +101,25 @@ def get_post_id(slug, headers):
 
 
 def make_request(headers, body, pid, updated_at):
-    if not pid:
-        url = f"{POSTS_API_BASE}?source=html"
-        r = requests.post(url, json=body, headers=headers)
-        # print(r.json())
-        print("Created new post")
-    else:
-        body["posts"][0]["updated_at"] = updated_at
+    try:
+        if not pid:
+            url = f"{POSTS_API_BASE}?source=html"
+            r = requests.post(url, json=body, headers=headers)
+            preview_link = r.json()["posts"][0]["url"]
+            logging.info("Created new post")
+            logging.info(f"Blog preview link: {preview_link}")
 
-        url = f"{POSTS_API_BASE}{pid}?source=html"
+        else:
+            body["posts"][0]["updated_at"] = updated_at
 
-        r = requests.put(url, json=body, headers=headers)
-        # print(r.json())
-        print("Updated existing post based on slug")
+            url = f"{POSTS_API_BASE}{pid}?source=html"
+
+            r = requests.put(url, json=body, headers=headers)
+            preview_link = r.json()["posts"][0]["url"]
+            logging.info(f"Updated existing post based on slug")
+            logging.info(f"Blog preview link: {preview_link}")
+    except Exception as e:
+        logging.error(e)
 
     return
 
@@ -150,7 +157,7 @@ def upload_images(token, html_data, IMAGE_BACKEND):
             else:
                 # image comparison here
                 image_link = upload_to_ghost(
-                    token, image_data, hash_value, blog_image_list
+                    token, image_data, hash_value, blog_image_list, logging
                 )
 
         else:
@@ -158,10 +165,13 @@ def upload_images(token, html_data, IMAGE_BACKEND):
                 upload_to_s3(image, hash_value)
                 image_link = f"{S3_BASE_URL}{hash_value}"
             else:
-                image_link = upload_to_ghost(token, image, hash_value, blog_image_list)
+                image_link = upload_to_ghost(
+                    token, image, hash_value, blog_image_list, logging
+                )
 
         uploaded_images[image] = image_link
-    print("Uploaded images")
+
+    logging.info("Uploaded images")
     return uploaded_images
 
 
@@ -188,19 +198,24 @@ def upload_feature_image(meta, token, feature_image):
                 feature_img_list = [feature_image]
             else:
                 feature_img_list = []
-            image_link = upload_to_ghost(token, i, image_name, feature_img_list)
+            image_link = upload_to_ghost(
+                token, i, image_name, feature_img_list, logging
+            )
             meta["feature_image"] = image_link
-        print("Uploaded feature image")
+
+        logging.info("Uploaded feature image")
     except Exception as e:
-        print("Error in feature image uploading", e)
+        logging.error("Error in feature image uploading", e)
+
         pass
 
 
 def post_to_ghost(meta, md):
     if not "slug" in meta:
-        print(
+        logging.error(
             "ERROR: Include a URL friendly slug field in your markdown file and retry! This is required to support updates"
         )
+
         return
 
     if meta["sidebar_toc"]:
@@ -225,17 +240,17 @@ def post_to_ghost(meta, md):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        print("Usage: glee.py <path_to_markdown_file>")
-        # print("Trying to read 'sample_post.md'")
-        # post = frontmatter.load("sample_post.md")
-        sys.exit(0)
-    elif len(sys.argv) == 2:
-        post = frontmatter.load(sys.argv[1])
-    else:
-        print("Usage: glee.py <path_to_markdown_file>")
-        sys.exit(0)
-    # print(post.metadata)
-    # print(post.content)
+    parser = argparse.ArgumentParser(description="Publish Markdown Files to Ghost Blog")
+    parser.add_argument("markdown_file", type=str, help="<path_to_markdown_file>")
+    parser.add_argument("--debug", action="store_true", help="Enable debug mode")
+
+    args = parser.parse_args()
+    post = frontmatter.load(args.markdown_file)
+
+    log_format = "%(levelname)s:%(message)s"
+
+    logging.basicConfig(
+        level=logging.DEBUG if args.debug else logging.INFO, format=log_format
+    )
 
     post_to_ghost(post.metadata, post.content)
