@@ -69,7 +69,7 @@ The version notation is as follows: 'v4' represents version 4, 'v5' represents v
 #### Ghost URL
 The `GHOST_URL` represents the domain where your Ghost blog is hosted.
 
-### Image Storing Backend Configuration
+### Image Storage Backend Configuration
 
 All images in the markdown file can be stored either in your `ghost database` or an `AWS S3` bucket. We calculate the hash for each image and use that as the filename in `s3`. This ensures that each unique image is stored only once in the server and that there are no naming conflicts.
 
