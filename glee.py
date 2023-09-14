@@ -19,7 +19,6 @@ import shutil
 from datetime import datetime as date
 from handle_config import (
     view_toml_file,
-    ghost_crediential_not_found,
     check_configurations_exist,
     print_configuration,
 )
@@ -45,28 +44,20 @@ logging.basicConfig(
     level=logging.DEBUG if args.debug else logging.INFO, format=log_format
 )
 
-# Load the TOML file
-
 
 config, config_path = view_toml_file(logging)
+
 check_configurations_exist(logging)
 
 GHOST_VERSION = config["ghost-configuration"]["GHOST_VERSION"]
-
+IMAGE_BACKEND = config["image-configuration"]["IMAGE_BACKEND"]
+GHOST_URL = config["ghost-configuration"]["GHOST_URL"]
 
 if GHOST_VERSION == "v5":
-    POSTS_API_BASE = f"{config['ghost-configuration']['GHOST_URL']}/api/admin/posts/"
+    POSTS_API_BASE = f"{GHOST_URL}/api/admin/posts/"
 else:
-    POSTS_API_BASE = (
-        f"{config['ghost-configuration']['GHOST_URL']}/api/{GHOST_VERSION}/admin/posts/"
-    )
+    POSTS_API_BASE = f"{GHOST_URL}/api/{GHOST_VERSION}/admin/posts/"
 
-# S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
-S3_BASE_URL = ""
-IMAGE_BACKEND = config["image-configuration"]["IMAGE_BACKEND"]
-
-# if S3_BASE_URL == "":
-#     ghost_crediential_not_found(config_path)
 
 mdlib = markdown.Markdown(
     extensions=[
@@ -169,6 +160,7 @@ def upload_images(token, html_data, IMAGE_BACKEND):
         if image.startswith("http://") or image.startswith("https://"):
             if IMAGE_BACKEND == "s3":
                 upload_to_s3(image_data, hash_value, logging)
+                S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
                 image_link = f"{S3_BASE_URL}{hash_value}"
             else:
                 # image comparison here
@@ -179,6 +171,7 @@ def upload_images(token, html_data, IMAGE_BACKEND):
         else:
             if IMAGE_BACKEND == "s3":
                 upload_to_s3(image, hash_value, logging)
+                S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
                 image_link = f"{S3_BASE_URL}{hash_value}"
             else:
                 image_link = upload_to_ghost(
@@ -208,6 +201,7 @@ def upload_feature_image(meta, token, feature_image):
 
         if IMAGE_BACKEND == "s3":
             upload_to_s3(i, image_name, logging)
+            S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
             meta["feature_image"] = f"{S3_BASE_URL}{image_name}"
         else:
             if feature_image is not None:

@@ -46,6 +46,7 @@ def check_configurations_exist(logging):
         config, config_path = view_toml_file(logging)
         ghost_config = config["ghost-configuration"]
         image_config = config["image-configuration"]
+        aws_config = config["aws-s3-configuration"]
 
         if ghost_config["ADMIN_API_KEY"] == "":
             sys.exit(
@@ -66,6 +67,24 @@ def check_configurations_exist(logging):
             sys.exit(
                 f"Error: Inproper option for IMAGE_BACKEND , the option should be 'ghost' or 's3' in the file located at {config_path}"
             )
+        if image_config["IMAGE_BACKEND"] == "s3":
+            if aws_config["ACCESS_KEY_ID"] == "":
+                sys.exit(
+                    f"Error: Include AWS S3 ACCESS_KEY_ID in the file located at {config_path}"
+                )
+            if aws_config["SECRET_ACCESS_KEY"] == "":
+                sys.exit(
+                    f"Error: Include AWS S3 SECRET_ACCESS_KEY in the file located at {config_path}"
+                )
+            if aws_config["BUCKET_NAME"] == "":
+                sys.exit(
+                    f"Error: Include AWS S3 BUCKET_NAME in the file located at {config_path}"
+                )
+            if aws_config["S3_BASE_URL"] == "":
+                sys.exit(
+                    f"Error: Include AWS S3 S3_BASE_URL in the file located at {config_path}"
+                )
+
     except Exception as e:
         sys.exit(f"An error occurred: {e}")
 
