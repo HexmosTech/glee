@@ -24,7 +24,7 @@ from handle_config import (
 )
 from ghost_upload_image import upload_to_ghost, get_images_from_post
 import logging
-
+import sys
 
 parser = argparse.ArgumentParser(description="Publish Markdown Files to Ghost Blog")
 parser.add_argument(
@@ -79,32 +79,44 @@ def to_html(md):
 
 def get_jwt():
     key = config["ghost-configuration"]["ADMIN_API_KEY"]
-    id, secret = key.split(":")
-    if GHOST_VERSION == "v5":
-        aud_value = "/admin/"
-    else:
-        aud_value = f"/{GHOST_VERSION}/admin/"
-    iat = int(date.now().timestamp())
+    try:
+        id, secret = key.split(":")
+        if GHOST_VERSION == "v5":
+            aud_value = "/admin/"
+        else:
+            aud_value = f"/{GHOST_VERSION}/admin/"
+        iat = int(date.now().timestamp())
 
-    h = {"iat": iat, "exp": iat + 5 * 60, "aud": aud_value}
-    token = jwt.encode(h, bytes.fromhex(secret), algorithm="HS256", headers={"kid": id})
-    return token
+        h = {"iat": iat, "exp": iat + 5 * 60, "aud": aud_value}
+        token = jwt.encode(
+            h, bytes.fromhex(secret), algorithm="HS256", headers={"kid": id}
+        )
+        return token
+    except Exception as e:
+        logging.error(
+            f"Unable to generate the JWT token. Please check the Admin API key.({e})"
+        )
+        sys.exit(1)
 
 
 def get_post_id(slug, headers):
-    url = f"{POSTS_API_BASE}slug/{slug}/"
-    r = requests.get(url, headers=headers)
-    if r.ok:
-        j = r.json()
-        return (
-            j["posts"][0]["id"],
-            j["posts"][0]["updated_at"],
-            j["posts"][0]["mobiledoc"],
-            j["posts"][0]["feature_image"],
+    try:
+        url = f"{POSTS_API_BASE}slug/{slug}/"
+        r = requests.get(url, headers=headers)
+        if r.ok:
+            j = r.json()
+            return (
+                j["posts"][0]["id"],
+                j["posts"][0]["updated_at"],
+                j["posts"][0]["mobiledoc"],
+                j["posts"][0]["feature_image"],
+            )
+        else:
+            sys.exit(f"Unable to communicate with the Ghost Admin API:{r.json()}")
+    except Exception as e:
+        sys.exit(
+            f"Error:Unable to communicate with the Ghost Admin API. Please verify your Ghost configurations: {e}"
         )
-
-    else:
-        return (None, None)
 
 
 def make_request(headers, body, pid, updated_at):
@@ -126,7 +138,7 @@ def make_request(headers, body, pid, updated_at):
             logging.info(f"Updated existing post based on slug")
             logging.info(f"Blog preview link: {preview_link}")
     except Exception as e:
-        logging.error(e)
+        logging.error(f"Error:{e}")
 
     return
 

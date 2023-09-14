@@ -18,9 +18,6 @@ def upload_to_ghost(token, image, hash_name, blog_image_list, logging):
 
     GHOST_VERSION = config["ghost-configuration"]["GHOST_VERSION"]
 
-    if GHOST_VERSION == "":
-        ghost_crediential_not_found(config_path)
-
     if GHOST_VERSION == "v5":
         POSTS_API_BASE = (
             f"{config['ghost-configuration']['GHOST_URL']}/api/admin/images/upload/"
