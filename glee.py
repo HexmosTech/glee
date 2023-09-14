@@ -1,5 +1,4 @@
 import jwt
-import arrow
 import requests
 import argparse
 import frontmatter
@@ -8,7 +7,7 @@ from markdown.extensions.toc import TocExtension
 from markdown.extensions.fenced_code import FencedCodeExtension
 from markdown.extensions.codehilite import CodeHiliteExtension
 from markdown.extensions.tables import TableExtension
-import sys
+
 from styles import style, sidebar_toc_head, sidebar_toc_footer
 from images import ImgExtExtension
 from hasher import sha256sum
@@ -16,25 +15,43 @@ from s3 import upload_to_s3
 from bs4 import BeautifulSoup
 import os
 import shutil
-import toml
+
 from datetime import datetime as date
-from handle_config import get_toml_file, ghost_crediential_not_found
+from handle_config import (
+    view_toml_file,
+    ghost_crediential_not_found,
+    check_configurations_exist,
+    print_configuration,
+)
 from ghost_upload_image import upload_to_ghost, get_images_from_post
 import logging
 
-# Load the TOML file
-try:
-    config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
-    config = toml.load(config_path)
-except:
-    get_toml_file(config_path)
-    sys.exit(0)
 
+parser = argparse.ArgumentParser(description="Publish Markdown Files to Ghost Blog")
+parser.add_argument(
+    "--config", action="store_true", help=" Show glee configuration file"
+)
+parser.add_argument("markdown_file", type=str, help="<path_to_markdown_file>")
+parser.add_argument("--debug", action="store_true", help="Enable debug mode")
+
+args = parser.parse_args()
+if args.config:
+    print_configuration(logging)
+
+
+log_format = "%(levelname)s:%(message)s"
+
+logging.basicConfig(
+    level=logging.DEBUG if args.debug else logging.INFO, format=log_format
+)
+
+# Load the TOML file
+
+
+config, config_path = view_toml_file(logging)
+check_configurations_exist(logging)
 
 GHOST_VERSION = config["ghost-configuration"]["GHOST_VERSION"]
-
-if GHOST_VERSION == "":
-    ghost_crediential_not_found(config_path)
 
 
 if GHOST_VERSION == "v5":
@@ -44,7 +61,8 @@ else:
         f"{config['ghost-configuration']['GHOST_URL']}/api/{GHOST_VERSION}/admin/posts/"
     )
 
-S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
+# S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
+S3_BASE_URL = ""
 IMAGE_BACKEND = config["image-configuration"]["IMAGE_BACKEND"]
 
 # if S3_BASE_URL == "":
@@ -70,8 +88,6 @@ def to_html(md):
 
 def get_jwt():
     key = config["ghost-configuration"]["ADMIN_API_KEY"]
-    if key == "":
-        ghost_crediential_not_found(config_path)
     id, secret = key.split(":")
     if GHOST_VERSION == "v5":
         aud_value = "/admin/"
@@ -152,7 +168,7 @@ def upload_images(token, html_data, IMAGE_BACKEND):
 
         if image.startswith("http://") or image.startswith("https://"):
             if IMAGE_BACKEND == "s3":
-                upload_to_s3(image_data, hash_value)
+                upload_to_s3(image_data, hash_value, logging)
                 image_link = f"{S3_BASE_URL}{hash_value}"
             else:
                 # image comparison here
@@ -162,7 +178,7 @@ def upload_images(token, html_data, IMAGE_BACKEND):
 
         else:
             if IMAGE_BACKEND == "s3":
-                upload_to_s3(image, hash_value)
+                upload_to_s3(image, hash_value, logging)
                 image_link = f"{S3_BASE_URL}{hash_value}"
             else:
                 image_link = upload_to_ghost(
@@ -191,7 +207,7 @@ def upload_feature_image(meta, token, feature_image):
         image_name = hash_value + file_extension
 
         if IMAGE_BACKEND == "s3":
-            upload_to_s3(i, image_name)
+            upload_to_s3(i, image_name, logging)
             meta["feature_image"] = f"{S3_BASE_URL}{image_name}"
         else:
             if feature_image is not None:
@@ -240,17 +256,5 @@ def post_to_ghost(meta, md):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Publish Markdown Files to Ghost Blog")
-    parser.add_argument("markdown_file", type=str, help="<path_to_markdown_file>")
-    parser.add_argument("--debug", action="store_true", help="Enable debug mode")
-
-    args = parser.parse_args()
     post = frontmatter.load(args.markdown_file)
-
-    log_format = "%(levelname)s:%(message)s"
-
-    logging.basicConfig(
-        level=logging.DEBUG if args.debug else logging.INFO, format=log_format
-    )
-
     post_to_ghost(post.metadata, post.content)
