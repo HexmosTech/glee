@@ -176,6 +176,19 @@ Fenced code blocks docs: https://python-markdown.github.io/extensions/fenced_cod
 ### Collaboration
 When multiple team members are working simultaneously on the same Ghost blog, they can collaborate seamlessly using any version control system. `glee` will update the blog content with each `glee` command.
 
+
+## Debugging
+
+Utilize the `--debug` option with your glee command to uncover underlying issues.
+```bash
+ glee sample_post.md --debug 
+```
+## View Configuration
+Utilize the `--config` option with your glee command to view the glee configurations.
+```bash
+glee sample_post.md --config
+```
+
 ## Local Testing
 Clone the repository and test the `glee` tool locally.
 
