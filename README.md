@@ -71,19 +71,31 @@ The `GHOST_URL` represents the domain where your Ghost blog is hosted.
 
 ### Image Storing Backend Configuration
 
-All images in the markdown file are uploaded to a `ghost` database or an `s3` bucket. We calculate the hash for each image and use that as the filename in `s3`. This ensures that each unique image is stored only once in the server and that there are no naming conflicts.
+All images in the markdown file can be stored either in your `ghost database` or an `AWS S3` bucket. We calculate the hash for each image and use that as the filename in `s3`. This ensures that each unique image is stored only once in the server and that there are no naming conflicts.
 
 1. **Your Ghost Database (default)**
 
-  You can store the image in the same db where your content resides. To use Ghost as an image backend provide  `IMAGE_BACKEND = "ghost"` in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml#L13) file.
+  You can store the image in the same db where your content resides. To use Ghost as an image backend provide 
+  ```toml
+  [image-configuration]
+
+  IMAGE_BACKEND = "ghost"  
+  ```
+  in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml#L13) file.
 
 2. **AWS S3**
 
-  Or, you can store the images in your AWS S3 bucket as well. To use S3 as an image backend provide `IMAGE_BACKEND = "s3"` in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml#L13) file.
+  Or, you can store the images in your `AWS S3` bucket as well. To use `S3` as an image backend provide 
+  ```toml
+  [image-configuration]
+  
+  IMAGE_BACKEND = "s3"
+  ```
+  in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml#L13) file.
 
-Also, Configure the S3 Credentials in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml) file.
+Also, Configure the `S3` Credentials in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml) file.
 
-Find further [information](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) and [tutorial](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) to learn more about AWS S3.
+Find further [information](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) and [tutorial](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) to learn more about `AWS S3`.
 
 
 
