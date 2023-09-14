@@ -5,17 +5,11 @@ import json
 import os
 import toml
 import sys
-from handle_config import get_toml_file, ghost_crediential_not_found
+from handle_config import view_toml_file
 
 
 def upload_to_ghost(token, image, hash_name, blog_image_list, logging):
-    try:
-        config_path = os.path.join(os.path.expanduser("~"), ".glee.toml")
-        config = toml.load(config_path)
-    except:
-        get_toml_file(config_path)
-        sys.exit(0)
-
+    config, config_path = view_toml_file(logging)
     GHOST_VERSION = config["ghost-configuration"]["GHOST_VERSION"]
 
     if GHOST_VERSION == "v5":

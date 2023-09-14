@@ -171,9 +171,7 @@ def upload_images(token, html_data, IMAGE_BACKEND):
 
         if image.startswith("http://") or image.startswith("https://"):
             if IMAGE_BACKEND == "s3":
-                upload_to_s3(image_data, hash_value, logging)
-                S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
-                image_link = f"{S3_BASE_URL}{hash_value}"
+                image_link = upload_to_s3(image_data, hash_value, logging)
             else:
                 # image comparison here
                 image_link = upload_to_ghost(
@@ -182,9 +180,7 @@ def upload_images(token, html_data, IMAGE_BACKEND):
 
         else:
             if IMAGE_BACKEND == "s3":
-                upload_to_s3(image, hash_value, logging)
-                S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
-                image_link = f"{S3_BASE_URL}{hash_value}"
+                image_link = upload_to_s3(image, hash_value, logging)
             else:
                 image_link = upload_to_ghost(
                     token, image, hash_value, blog_image_list, logging
@@ -212,9 +208,7 @@ def upload_feature_image(meta, token, feature_image):
         image_name = hash_value + file_extension
 
         if IMAGE_BACKEND == "s3":
-            upload_to_s3(i, image_name, logging)
-            S3_BASE_URL = config["aws-s3-configuration"]["S3_BASE_URL"]
-            meta["feature_image"] = f"{S3_BASE_URL}{image_name}"
+            meta["feature_image"] = upload_to_s3(i, image_name, logging)
         else:
             if feature_image is not None:
                 feature_img_list = [feature_image]
