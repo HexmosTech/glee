@@ -25,13 +25,13 @@ jobs:
 
       - name: Copy file from Docker container
         run: |
-          docker cp glee:/app/glee.bin /tmp/glee.bin 
+          docker cp glee:/app/hello.bin /tmp/hello.bin 
 
       - name: Store artifact
         uses: actions/upload-artifact@v2
         with:
-          name: glee.bin
-          path: /tmp/glee.bin 
+          name: hello.bin
+          path: /tmp/hello.bin 
 
   Binary-Release:
     needs: Binary-Build
@@ -40,7 +40,7 @@ jobs:
       - name: Download artifact from Build job
         uses: actions/download-artifact@v2
         with:
-          name: glee.bin
+          name: hello.bin
           path: /tmp
 
       - name: Create Release
@@ -61,6 +61,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /tmp/glee.bin
-          asset_name: glee.bin
+          asset_path: /tmp/hello.bin
+          asset_name: hello.bin
           asset_content_type: application/octet-stream

@@ -38,5 +38,4 @@ RUN uname -m
 RUN python3 -m nuitka \
         --onefile \
         --follow-imports  \
-        --include-package=pygments  \
-        glee.py 
+        hello.py 
