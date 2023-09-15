@@ -31,6 +31,9 @@ RUN poetry config virtualenvs.create false && poetry install --no-interaction --
 # Copy the rest of the application code
 COPY . /app/
 
+#architecture
+RUN uname -m 
+
 # Set the entry point to start the application
 RUN python3 -m nuitka \
         --onefile \
