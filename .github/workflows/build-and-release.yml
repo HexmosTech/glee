@@ -60,9 +60,7 @@ jobs:
 
   Binary-Release:
     name: Create Release
-    needs:
-      - Binary-Build-Linux
-      - Binary-Build-Mac
+    needs: [Binary-Build-Linux, Binary-Build-Mac]
     runs-on: ubuntu-latest
     steps:
       - name: Download Linux artifact
