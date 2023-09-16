@@ -54,13 +54,18 @@ jobs:
         run: |
           docker cp glee:/app/hello.bin /tmp/hello_mac.bin 
       - name: check /tmp
-        run: ls /tmp
+        run: |
+          ls /tmp
+          ls -all
+
 
       - name: Store artifact
         uses: actions/upload-artifact@v2
         with:
           name: hello_mac.bin
           path: /tmp/hello_mac.bin 
+        env:
+          ACTIONS_STEP_DEBUG: true
 
   # Binary-Release:
   #   needs: Binary-Build-Linux
