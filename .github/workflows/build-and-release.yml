@@ -46,8 +46,8 @@ jobs:
       # Continue with your Poetry-related commands
       - name: Install dependencies and build
         run: |
-          poetry install
-          python -m nuitka --onefile --follow-imports hello.py 
+          /Users/runner/.local/bin/poetry install
+          python3 -m nuitka --onefile --follow-imports hello.py 
 
 
       - name: Store artifact
