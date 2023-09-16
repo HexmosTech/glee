@@ -46,8 +46,8 @@ jobs:
       # Continue with your Poetry-related commands
       - name: Install dependencies and build
         run: |
-          /Users/runner/.local/bin/poetry shell
-          /Users/runner/.local/bin/poetry install
+          /Users/runner/.local/bin/poetry shell --no-interaction --no-ansi
+          /Users/runner/.local/bin/poetry install --no-interaction --no-ansi
           python3 -m nuitka --onefile --follow-imports hello.py 
 
 
