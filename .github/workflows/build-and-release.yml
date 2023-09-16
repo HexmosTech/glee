@@ -48,7 +48,7 @@ jobs:
         run: |
           /Users/runner/.local/bin/poetry config virtualenvs.create false
           /Users/runner/.local/bin/poetry install --no-interaction --no-ansi
-          python3 -m nuitka --onefile --follow-imports  --include-package=pygments  glee.py  
+          python3 -m nuitka --onefile --follow-imports  --include-package=pygments --disable-ccache glee.py  
 
 
       - name: Store artifact
