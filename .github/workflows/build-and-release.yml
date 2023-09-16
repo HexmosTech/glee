@@ -45,13 +45,13 @@ jobs:
 
       - name: Install Docker Compose
         run: |
-          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
+          brew install docker
+          colima start
 
       - name: Build Docker image
         run: |
-            docker build -t glee:latest .
-            docker run -d --name glee glee:latest
+          docker build -t glee:latest .
+          docker run -d --name glee glee:latest
 
       - name: Copy file from Docker container
         run: |
