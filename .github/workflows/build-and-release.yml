@@ -8,7 +8,7 @@ on:
 
 
 jobs:
-  Binary-Build:
+  Binary-Build-Linux:
     name: Build binary using nuitka
     runs-on: ubuntu-latest
     steps:
@@ -32,9 +32,22 @@ jobs:
         with:
           name: hello.bin
           path: /tmp/hello.bin 
+  Binary-Build-Mac:
+    name: Build on mac OS
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Install Docker
+        run: |
+          brew update
+          brew install --cask docker
+          open /Applications/Docker.app
+      - name: Check Docker version
+        run: docker --version
 
   Binary-Release:
-    needs: Binary-Build
+    needs: Binary-Build-Linux
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact from Build job
