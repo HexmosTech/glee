@@ -33,7 +33,7 @@ jobs:
           name: hello.bin
           path: /tmp/hello.bin 
   Binary-Build-Mac:
-    name: Build on mac OS
+    name: Build on Mac OS
     runs-on: macos-latest
     steps:
       - name: Check out repository code
@@ -45,6 +45,20 @@ jobs:
           open /Applications/Docker.app
       - name: Check Docker version
         run: docker --version
+      - name: Build and run Docker image
+        run: |
+          docker build -t glee:latest .
+          docker run -d --name glee glee:latest
+
+      - name: Copy file from Docker container
+        run: |
+          docker cp glee:/app/hello.bin /tmp/hello_mac.bin 
+
+      - name: Store artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: hello_mac.bin
+          path: /tmp/hello_mac.bin 
 
   Binary-Release:
     needs: Binary-Build-Linux
