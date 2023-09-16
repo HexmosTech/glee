@@ -8,84 +8,86 @@ on:
 
 
 jobs:
-  Binary-Build-Linux:
-    name: Build binary using nuitka
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v2
+  # Binary-Build-Linux:
+  #   name: Build binary using nuitka
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+  #     - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+  #     - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+  #     - name: Check out repository code
+  #       uses: actions/checkout@v2
 
-      - name: Build and run Docker image
-        run: |
-          docker build -t glee:latest .
-          docker run -d --name glee glee:latest
+  #     - name: Build and run Docker image
+  #       run: |
+  #         docker build -t glee:latest .
+  #         docker run -d --name glee glee:latest
 
-      - name: Copy file from Docker container
-        run: |
-          docker cp glee:/app/hello.bin /tmp/hello.bin 
+  #     - name: Copy file from Docker container
+  #       run: |
+  #         docker cp glee:/app/hello.bin /tmp/hello.bin 
 
-      - name: Store artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: hello.bin
-          path: /tmp/hello.bin 
+  #     - name: Store artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: hello.bin
+  #         path: /tmp/hello.bin 
   Binary-Build-Mac:
     name: Build on Mac OS
     runs-on: macos-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - name: Install Docker Compose
-        run: |
-          brew install docker
-          colima start
+      - name: check /tmp
+        run: ls /tmp
+      # - name: Install Docker Compose
+      #   run: |
+      #     brew install docker
+      #     colima start
 
-      - name: Build Docker image
-        run: |
-          docker build -t glee:latest .
-          docker run -d --name glee glee:latest
+      # - name: Build Docker image
+      #   run: |
+      #     docker build -t glee:latest .
+      #     docker run -d --name glee glee:latest
 
-      - name: Copy file from Docker container
-        run: |
-          docker cp glee:/app/hello.bin /tmp/hello_mac.bin 
+      # - name: Copy file from Docker container
+      #   run: |
+      #     docker cp glee:/app/hello.bin /tmp/hello_mac.bin 
 
-      - name: Store artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: hello_mac.bin
-          path: /tmp/hello_mac.bin 
+      # - name: Store artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: hello_mac.bin
+      #     path: /tmp/hello_mac.bin 
 
-  Binary-Release:
-    needs: Binary-Build-Linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact from Build job
-        uses: actions/download-artifact@v2
-        with:
-          name: hello.bin
-          path: /tmp
+  # Binary-Release:
+  #   needs: Binary-Build-Linux
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download artifact from Build job
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: hello.bin
+  #         path: /tmp
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+  #     - name: Create Release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: ${{ github.ref }}
+  #         release_name: Release ${{ github.ref }}
+  #         draft: false
+  #         prerelease: false
 
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /tmp/hello.bin
-          asset_name: hello.bin
-          asset_content_type: application/octet-stream
+  #     - name: Upload Release Asset
+  #       id: upload-release-asset 
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ steps.create_release.outputs.upload_url }}
+  #         asset_path: /tmp/hello.bin
+  #         asset_name: hello.bin
+  #         asset_content_type: application/octet-stream
