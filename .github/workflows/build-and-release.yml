@@ -52,7 +52,7 @@ jobs:
 
       - name: Copy file from Docker container
         run: |
-          docker cp glee:/app/hello.bin /tmp/hello_mac.bin 
+          docker cp glee:/app/hello.bin hello_mac.bin 
       - name: check /tmp
         run: |
           ls /tmp
@@ -63,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: hello_mac.bin
-          path: /tmp/hello_mac.bin 
+          path: hello_mac.bin 
         env:
           ACTIONS_STEP_DEBUG: true
 
