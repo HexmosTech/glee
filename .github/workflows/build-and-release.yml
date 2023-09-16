@@ -40,25 +40,27 @@ jobs:
         uses: actions/checkout@v2
       - name: check /tmp
         run: ls /tmp
-      # - name: Install Docker Compose
-      #   run: |
-      #     brew install docker
-      #     colima start
+      - name: Install Docker Compose
+        run: |
+          brew install docker
+          colima start
 
-      # - name: Build Docker image
-      #   run: |
-      #     docker build -t glee:latest .
-      #     docker run -d --name glee glee:latest
+      - name: Build Docker image
+        run: |
+          docker build -t glee:latest .
+          docker run -d --name glee glee:latest
 
-      # - name: Copy file from Docker container
-      #   run: |
-      #     docker cp glee:/app/hello.bin /tmp/hello_mac.bin 
+      - name: Copy file from Docker container
+        run: |
+          docker cp glee:/app/hello.bin /tmp/hello_mac.bin 
+      - name: check /tmp
+        run: ls /tmp
 
-      # - name: Store artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: hello_mac.bin
-      #     path: /tmp/hello_mac.bin 
+      - name: Store artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: hello_mac.bin
+          path: /tmp/hello_mac.bin 
 
   # Binary-Release:
   #   needs: Binary-Build-Linux
