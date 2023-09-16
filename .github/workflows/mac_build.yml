@@ -9,9 +9,12 @@ jobs:
     name: Build binary using nuitka
     runs-on: macos-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
       - name: Check out repository code
         uses: actions/checkout@v2
 
@@ -29,7 +32,6 @@ jobs:
         with:
           name: hello_mac.bin
           path: /tmp/hello_mac.bin 
-
   Binary-Release:
     needs: Binary-Build
     runs-on: macos-latest
