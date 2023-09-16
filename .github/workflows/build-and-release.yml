@@ -71,8 +71,11 @@ jobs:
           name: glee_linux.bin
           path: /tmp
 
-      - name: Copy macOS artifact
-        run: mv glee_mac.bin /tmp
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: glee_mac.bin
+          path: /tmp
 
       - name: Create Release
         id: create_release
