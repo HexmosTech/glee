@@ -43,19 +43,19 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           export PATH="$HOME/.poetry/bin:$PATH"
 
-      # Continue with your Poetry-related commands
+     
       - name: Install dependencies and build
         run: |
           /Users/runner/.local/bin/poetry config virtualenvs.create false
           /Users/runner/.local/bin/poetry install --no-interaction --no-ansi
-          python3 -m nuitka --onefile --follow-imports hello.py 
+          python3 -m nuitka --onefile --follow-imports  --include-package=pygments  glee.py  
 
 
       - name: Store artifact
         uses: actions/upload-artifact@v2
         with:
-          name: hello_mac.bin
-          path: hello.bin 
+          name: glee_mac.bin
+          path: glee.bin 
         env:
           ACTIONS_STEP_DEBUG: true
 
