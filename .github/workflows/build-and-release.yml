@@ -57,52 +57,52 @@ jobs:
         with:
           name: glee_mac.bin
           path: glee.bin 
-          
+
   Binary-Release:
-  name: Create Release
-  needs:
-    - Binary-Build-Linux
-    - Binary-Build-Mac
-  runs-on: ubuntu-latest
-  steps:
-    - name: Download Linux artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: glee_linux.bin
-        path: /tmp
+    name: Create Release
+    needs:
+      - Binary-Build-Linux
+      - Binary-Build-Mac
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: glee_linux.bin
+          path: /tmp
 
-    - name: Copy macOS artifact
-      run: mv glee_mac.bin /tmp
+      - name: Copy macOS artifact
+        run: mv glee_mac.bin /tmp
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
 
-    - name: Upload Linux Release Asset
-      id: upload-linux-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: /tmp/glee_linux.bin
-        asset_name: glee_linux.bin
-        asset_content_type: application/octet-stream
+      - name: Upload Linux Release Asset
+        id: upload-linux-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /tmp/glee_linux.bin
+          asset_name: glee_linux.bin
+          asset_content_type: application/octet-stream
 
-    - name: Upload macOS Release Asset
-      id: upload-macos-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: /tmp/glee_mac.bin
-        asset_name: glee_mac.bin
-        asset_content_type: application/octet-stream
+      - name: Upload macOS Release Asset
+        id: upload-macos-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /tmp/glee_mac.bin
+          asset_name: glee_mac.bin
+          asset_content_type: application/octet-stream
