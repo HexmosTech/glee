@@ -38,11 +38,6 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - name: Set up Docker
-        uses: docker/setup-docker@v2
-        with:
-          docker-version: '20.10.7'
-
       - name: Install Docker Compose
         run: |
           brew install docker
