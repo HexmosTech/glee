@@ -38,32 +38,23 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - name: check /tmp
-        run: ls /tmp
-      - name: Install Docker Compose
+      - name: Install Poetry
         run: |
-          brew install docker
-          colima start
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.poetry/bin:$PATH"
 
-      - name: Build Docker image
+      # Continue with your Poetry-related commands
+      - name: Install dependencies and build
         run: |
-          docker build -t glee:latest .
-          docker run -d --name glee glee:latest
-
-      - name: Copy file from Docker container
-        run: |
-          docker cp glee:/app/hello.bin hello_mac.bin 
-      - name: check /tmp
-        run: |
-          ls /tmp
-          ls -all
+          poetry install
+          python -m nuitka --onefile --follow-imports hello.py 
 
 
       - name: Store artifact
         uses: actions/upload-artifact@v2
         with:
           name: hello_mac.bin
-          path: hello_mac.bin 
+          path: hello.bin 
         env:
           ACTIONS_STEP_DEBUG: true
 
