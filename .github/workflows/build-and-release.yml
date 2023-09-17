@@ -2,9 +2,9 @@ name: Binary Build And Release
 run-name: ${{ github.actor }} building the binary using nuitka 🚀
 on:
   push:
-    tags:
-    - '*'
-  workflow_dispatch:
+  #   tags:
+  #   - '*'
+  # workflow_dispatch:
 
 
 jobs:
@@ -61,31 +61,31 @@ jobs:
           path: glee_mac.bin 
 
   Binary-Build-Windows:
-  name: Build For Windows
-  runs-on: windows-latest
-  steps:
-    - name: Check out repository code
-      uses: actions/checkout@v2
+    name: Build For Windows
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
 
-    - name: Install Poetry
-      run: |
-        (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
-        $env:PATH = "$env:USERPROFILE\.poetry\bin;$env:PATH"
+      - name: Install Poetry
+        run: |
+          (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+          $env:PATH = "$env:USERPROFILE\.poetry\bin;$env:PATH"
 
-    - name: Install dependencies and build
-      run: |
-        poetry config virtualenvs.create false
-        poetry install --no-interaction --no-ansi
-        python -m nuitka --onefile --follow-imports --include-package=pygments --disable-ccache --output-filename=glee_windows.exe glee.py
+      - name: Install dependencies and build
+        run: |
+          poetry config virtualenvs.create false
+          poetry install --no-interaction --no-ansi
+          python -m nuitka --onefile --follow-imports --include-package=pygments --disable-ccache --output-filename=glee_windows.exe glee.py
 
-    - name: Store artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: glee_windows.exe
-        path: glee_windows.exe
+      - name: Store artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: glee_windows.exe
+          path: glee_windows.exe
 
 
-        
+
   Binary-Release:
     name: Create Release
     needs: [Binary-Build-Linux, Binary-Build-Mac]
