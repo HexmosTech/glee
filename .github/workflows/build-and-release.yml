@@ -74,8 +74,8 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          poetry config virtualenvs.create false
-          poetry install --no-interaction --no-ansi
+          C:\Users\runneradmin\AppData\Roaming\Python\Scripts\poetry config virtualenvs.create false
+          C:\Users\runneradmin\AppData\Roaming\Python\Scripts\poetry install --no-interaction --no-ansi
           python -m nuitka --onefile --follow-imports --include-package=pygments --disable-ccache --output-filename=glee_windows.exe glee.py
 
       - name: Store artifact
