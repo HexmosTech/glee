@@ -1,17 +1,19 @@
-
 #!/bin/bash
 
-GLEE_URL="https://github.com/HexmosTech/glee/releases/latest/download/glee.bin"
+
 CONFIG_URL="https://raw.githubusercontent.com/HexmosTech/glee/main/.glee.toml"
 
 DEST_DIR=""
 
 if [ "$(uname)" == "Darwin" ]; then
     DEST_DIR="/usr/local/bin/glee"
+    GLEE_URL="https://github.com/HexmosTech/glee/releases/latest/download/glee_mac.bin"
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     DEST_DIR="/usr/bin/glee"
+    GLEE_URL="https://github.com/HexmosTech/glee/releases/latest/download/glee_linux.bin"
 else
-    echo "Unsupported operating system. Please install glee manually."
+    echo "Unsupported operating system. Please install glee manually from"
+    echo "https://github.com/HexmosTech/glee/releases/latest"
     exit 1
 fi
 
@@ -35,7 +37,7 @@ fi
 sudo chmod +x $DEST_DIR
 
 
-echo "Downloading config.toml..."
+echo "Downloading configuration file..."
 wget -O "$HOME/.glee.toml" $CONFIG_URL
 
 echo "Installation completed successfully!"
