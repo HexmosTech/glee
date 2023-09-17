@@ -50,14 +50,14 @@ jobs:
         run: |
           /Users/runner/.local/bin/poetry config virtualenvs.create false
           /Users/runner/.local/bin/poetry install --no-interaction --no-ansi
-          python3 -m nuitka --onefile --follow-imports  --disable-ccache hello.py  
+          python3 -m nuitka --onefile --follow-imports  --disable-ccache --output-filename=glee_mac.bin  hello.py 
 
 
       - name: Store artifact
         uses: actions/upload-artifact@v2
         with:
           name: glee_mac.bin
-          path: hello.bin 
+          path: glee_mac.bin
 
   Binary-Release:
     name: Create Release
