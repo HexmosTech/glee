@@ -11,6 +11,7 @@ jobs:
   Binary-Build-Linux:
     name: Build For Linux
     runs-on: ubuntu-latest
+    if: false
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -49,31 +50,31 @@ jobs:
         run: |
           /Users/runner/.local/bin/poetry config virtualenvs.create false
           /Users/runner/.local/bin/poetry install --no-interaction --no-ansi
-          python3 -m nuitka --onefile --follow-imports  --include-package=pygments --disable-ccache glee.py  
+          python3 -m nuitka --onefile --follow-imports  --include-package=pygments --disable-ccache hello.py  
 
 
       - name: Store artifact
         uses: actions/upload-artifact@v2
         with:
           name: glee_mac.bin
-          path: glee.bin 
+          path: hello.bin 
 
   Binary-Release:
     name: Create Release
-    needs: [Binary-Build-Linux, Binary-Build-Mac]
+    needs: [Binary-Build-Mac]
     runs-on: ubuntu-latest
     steps:
-      - name: Download Linux artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: glee_linux.bin
-          path: /tmp
+      # - name: Download Linux artifact
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: glee_linux.bin
+      #     path: /tmp
 
       - name: Download macOS artifact
         uses: actions/download-artifact@v2
         with:
           name: glee_mac.bin
-          path: ./
+          path: /tmp
 
       - name: Create Release
         id: create_release
@@ -83,7 +84,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          draft: false
+          draft: true
           prerelease: false
 
       - name: Upload Linux Release Asset
@@ -104,6 +105,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: glee_mac.bin
+          asset_path: /tmp/glee/glee_mac.bin
           asset_name: glee_mac.bin
           asset_content_type: application/octet-stream
