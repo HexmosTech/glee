@@ -141,7 +141,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload Windows Release Asset
-        id: upload-macos-release-asset
+        id: upload-windows-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
