@@ -58,9 +58,35 @@ jobs:
           name: glee_mac.bin
           path: glee_mac.bin 
 
+  Binary-Build-Windows:
+    name: Build For Windows
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Install Poetry
+        run: |
+          (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+          $env:PATH = "$env:USERPROFILE\.poetry\bin;$env:PATH"
+
+      - name: Install dependencies and build
+        run: |
+          C:\Users\runneradmin\AppData\Roaming\Python\Scripts\poetry config virtualenvs.create false
+          C:\Users\runneradmin\AppData\Roaming\Python\Scripts\poetry install --no-interaction --no-ansi
+          python -m nuitka --onefile --follow-imports --include-package=pygments --disable-cache=all --assume-yes-for-downloads --output-filename=glee_windows.exe glee.py
+
+      - name: Store artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: glee_windows.exe
+          path: glee_windows.exe
+
+
+
   Binary-Release:
     name: Create Release
-    needs: [Binary-Build-Linux, Binary-Build-Mac]
+    needs: [Binary-Build-Linux, Binary-Build-Mac,Binary-Build-Windows]
     runs-on: ubuntu-latest
     steps:
       - name: Download Linux artifact
@@ -73,6 +99,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: glee_mac.bin
+          path: /tmp
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: glee_windows.exe
           path: /tmp
 
       - name: Create Release
@@ -107,3 +139,14 @@ jobs:
           asset_path: /tmp/glee_mac.bin
           asset_name: glee_mac.bin
           asset_content_type: application/octet-stream
+
+      - name: Upload Windows Release Asset
+          id: upload-macos-release-asset
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: /tmp/glee_windows.exe
+            asset_name: glee_windows.exe
+            asset_content_type: application/octet-stream
