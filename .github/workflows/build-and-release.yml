@@ -10,7 +10,6 @@ on:
 jobs:
   Binary-Build-Linux:
     name: Build For Linux
-    if: false
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -36,7 +35,6 @@ jobs:
 
   Binary-Build-Mac:
     name: Build For Mac OS
-    if: false
     runs-on: macos-latest
     steps:
       - name: Check out repository code
@@ -88,7 +86,7 @@ jobs:
 
   Binary-Release:
     name: Create Release
-    needs: [Binary-Build-Linux, Binary-Build-Mac]
+    needs: [Binary-Build-Linux, Binary-Build-Mac,Binary-Build-Windows]
     runs-on: ubuntu-latest
     steps:
       - name: Download Linux artifact
