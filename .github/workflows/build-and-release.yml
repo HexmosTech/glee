@@ -2,14 +2,14 @@ name: Binary Build And Release
 run-name: ${{ github.actor }} building the binary using nuitka 🚀
 on:
   push:
-    # tags:
-    # - '*'
+    tags:
+    - '*'
   workflow_dispatch:
 
 
 jobs:
   Binary-Build-Linux:
-    name: Build binary using nuitka
+    name: Build For Linux
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -34,7 +34,7 @@ jobs:
           path: /tmp/glee_linux.bin 
 
   Binary-Build-Mac:
-    name: Build on Mac OS
+    name: Build For Mac OS
     runs-on: macos-latest
     steps:
       - name: Check out repository code
