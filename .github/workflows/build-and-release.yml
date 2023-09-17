@@ -50,7 +50,7 @@ jobs:
         run: |
           /Users/runner/.local/bin/poetry config virtualenvs.create false
           /Users/runner/.local/bin/poetry install --no-interaction --no-ansi
-          python3 -m nuitka --onefile --follow-imports  --include-package=pygments --disable-ccache hello.py  
+          python3 -m nuitka --onefile --follow-imports  --disable-ccache hello.py  
 
 
       - name: Store artifact
@@ -97,6 +97,9 @@ jobs:
       #     asset_path: /tmp/glee_linux.bin
       #     asset_name: glee_linux.bin
       #     asset_content_type: application/octet-stream
+      - name: check files in tmp
+        run: |
+          ls /tmp
 
       - name: Upload macOS Release Asset
         id: upload-macos-release-asset
@@ -105,6 +108,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /tmp/glee/glee_mac.bin
+          asset_path: /tmp/glee_mac.bin
           asset_name: glee_mac.bin
           asset_content_type: application/octet-stream
