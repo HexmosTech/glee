@@ -10,6 +10,7 @@ on:
 jobs:
   Binary-Build-Linux:
     name: Build For Linux
+    if: false
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -35,6 +36,7 @@ jobs:
 
   Binary-Build-Mac:
     name: Build For Mac OS
+    if: false
     runs-on: macos-latest
     steps:
       - name: Check out repository code
@@ -58,6 +60,32 @@ jobs:
           name: glee_mac.bin
           path: glee_mac.bin 
 
+  Binary-Build-Windows:
+  name: Build For Windows
+  runs-on: windows-latest
+  steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Install Poetry
+      run: |
+        (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+        $env:PATH = "$env:USERPROFILE\.poetry\bin;$env:PATH"
+
+    - name: Install dependencies and build
+      run: |
+        poetry config virtualenvs.create false
+        poetry install --no-interaction --no-ansi
+        python -m nuitka --onefile --follow-imports --include-package=pygments --disable-ccache --output-filename=glee_windows.exe glee.py
+
+    - name: Store artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: glee_windows.exe
+        path: glee_windows.exe
+
+
+        
   Binary-Release:
     name: Create Release
     needs: [Binary-Build-Linux, Binary-Build-Mac]
