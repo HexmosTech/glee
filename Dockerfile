@@ -35,5 +35,6 @@ COPY . /app/
 RUN python3 -m nuitka \
         --onefile \
         --follow-imports  \
+        --clang \
         --include-package=pygments  \
         glee.py 
