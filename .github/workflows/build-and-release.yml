@@ -11,7 +11,6 @@ jobs:
   Binary-Build-Linux:
     name: Build For Linux
     runs-on: ubuntu-latest
-    if: false
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -50,25 +49,25 @@ jobs:
         run: |
           /Users/runner/.local/bin/poetry config virtualenvs.create false
           /Users/runner/.local/bin/poetry install --no-interaction --no-ansi
-          python3 -m nuitka --onefile --follow-imports  --disable-ccache --output-filename=glee_mac.bin  hello.py 
+          python3 -m nuitka --onefile --follow-imports  --include-package=pygments --disable-ccache  --output-filename=glee_mac.bin glee.py  
 
 
       - name: Store artifact
         uses: actions/upload-artifact@v2
         with:
           name: glee_mac.bin
-          path: glee_mac.bin
+          path: glee_mac.bin 
 
   Binary-Release:
     name: Create Release
-    needs: [Binary-Build-Mac]
+    needs: [Binary-Build-Linux, Binary-Build-Mac]
     runs-on: ubuntu-latest
     steps:
-      # - name: Download Linux artifact
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: glee_linux.bin
-      #     path: /tmp
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: glee_linux.bin
+          path: /tmp
 
       - name: Download macOS artifact
         uses: actions/download-artifact@v2
@@ -84,22 +83,19 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          draft: true
+          draft: false
           prerelease: false
 
-      # - name: Upload Linux Release Asset
-      #   id: upload-linux-release-asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: /tmp/glee_linux.bin
-      #     asset_name: glee_linux.bin
-      #     asset_content_type: application/octet-stream
-      - name: check files in tmp
-        run: |
-          ls /tmp
+      - name: Upload Linux Release Asset
+        id: upload-linux-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /tmp/glee_linux.bin
+          asset_name: glee_linux.bin
+          asset_content_type: application/octet-stream
 
       - name: Upload macOS Release Asset
         id: upload-macos-release-asset
