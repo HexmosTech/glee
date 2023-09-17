@@ -76,7 +76,7 @@ jobs:
         run: |
           C:\Users\runneradmin\AppData\Roaming\Python\Scripts\poetry config virtualenvs.create false
           C:\Users\runneradmin\AppData\Roaming\Python\Scripts\poetry install --no-interaction --no-ansi
-          python -m nuitka --onefile --follow-imports --include-package=pygments --disable-cache=all --output-filename=glee_windows.exe glee.py
+          python -m nuitka --onefile --follow-imports --include-package=pygments --disable-cache=all --assume-yes-for-downloads --output-filename=glee_windows.exe glee.py
 
       - name: Store artifact
         uses: actions/upload-artifact@v2
