@@ -1,7 +1,7 @@
 ---
 title:  'testing sample markdown file'
 authors:
-- sample@gmail.com
+- linz07m@gmail.com
 tags: []
 featured: false
 status: draft

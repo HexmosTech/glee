@@ -112,6 +112,8 @@ def get_post_id(slug, headers):
                 j["posts"][0]["feature_image"],
             )
         else:
+            if r.status_code == 404:
+                return None, None, None, None
             sys.exit(f"Unable to communicate with the Ghost Admin API:{r.json()}")
     except Exception as e:
         sys.exit(

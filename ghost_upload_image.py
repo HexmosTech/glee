@@ -55,9 +55,12 @@ def upload_to_ghost(token, image, hash_name, blog_image_list, logging):
 
 
 def get_images_from_post(post):
-    parsed_post = json.loads(post)
     image_list = []
-    soup = BeautifulSoup(parsed_post["cards"][0][1]["html"], features="html.parser")
-    for img in soup.find_all("img"):
-        image_list.append(img["src"])
-    return image_list
+    try:
+        parsed_post = json.loads(post)
+        soup = BeautifulSoup(parsed_post["cards"][0][1]["html"], features="html.parser")
+        for img in soup.find_all("img"):
+            image_list.append(img["src"])
+        return image_list
+    except:
+        return image_list
