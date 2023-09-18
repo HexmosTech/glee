@@ -86,7 +86,7 @@ def get_jwt():
         else:
             aud_value = f"/{GHOST_VERSION}/admin/"
         iat = int(date.now().timestamp())
-
+        
         h = {"iat": iat, "exp": iat + 5 * 60, "aud": aud_value}
         token = jwt.encode(
             h, bytes.fromhex(secret), algorithm="HS256", headers={"kid": id}
@@ -144,12 +144,19 @@ def make_request(headers, body, pid, updated_at):
 
     return
 
+def get_temp_dir():
+    if os.name == 'nt':  # Check if the operating system is Windows
+        return os.environ['TEMP']
+    else:
+        return '/tmp/img'
+
 
 def image_to_hash(image):
     tp = ""
     if image.startswith("http://") or image.startswith("https://"):
         iext = image.split(".")[-1]
-        tp = "/tmp/img." + iext
+        temp_dir = get_temp_dir()
+        tp = os.path.join(temp_dir, "img." + iext)
         response = requests.get(image, stream=True)
         with open(tp, "wb") as out_file:
             shutil.copyfileobj(response.raw, out_file)
