@@ -148,7 +148,7 @@ def get_temp_dir():
     if os.name == 'nt':  # Check if the operating system is Windows
         return os.environ['TEMP']
     else:
-        return '/tmp/img'
+        return '/tmp/'
 
 
 def image_to_hash(image):
