@@ -23,12 +23,20 @@
 
 ## Installation/Update
 
-For Linux/MacOS systems, run the following command to either install or update `glee`:
+Run the following command to either install or update `glee`:
 
+For Linux/MacOS systems or Linux via WSL:
 ```bash
 wget -O - https://raw.githubusercontent.com/HexmosTech/glee/main/install.sh | bash
 ```
 
+For Windows,
+Open the cmd (Command Prompt) as administrator and run:
+```cmd
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/HexmosTech/glee/main/install.bat', 'install.bat'); Start-Process 'install.bat';"
+```
+or download the exe file from releases.
+Note: If you face any security issues in windows disable the Real-time protection in virus and threat protection settings
 ## Configuration
 
 After the installation, `glee` will create a configuration file ([.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml)) in your home directory.
