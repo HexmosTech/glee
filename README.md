@@ -30,13 +30,17 @@ For Linux/MacOS systems or Linux via WSL:
 wget -O - https://raw.githubusercontent.com/HexmosTech/glee/main/install.sh | bash
 ```
 
-For Windows,
-Open the cmd (Command Prompt) as administrator and run:
+For Windows:
+Open the Command Prompt (cmd) as an administrator and execute the following command:
 ```cmd
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/HexmosTech/glee/main/install.bat', 'install.bat'); Start-Process 'install.bat';"
 ```
-or download the exe file from releases.
-Note: If you face any security issues in windows disable the Real-time protection in virus and threat protection settings
+Alternatively, you can download the [executable (exe) file](https://github.com/HexmosTech/glee/releases/latest/download/glee_windows.exe) and then move it into the `system32` folder using the command:
+
+```cmd
+Move-Item -Path "C:\Path\to\Downloads\glee_windows.exe" -Destination "C:\Windows\system32\glee.exe"
+```
+Note: If you encounter any security issues on Windows, turn off the [Real-time protection](https://support.microsoft.com/en-us/windows/turn-off-defender-antivirus-protection-in-windows-security-99e6004f-c54c-8509-773c-a4d776b77960) in the virus and threat protection settings.
 ## Configuration
 
 After the installation, `glee` will create a configuration file ([.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml)) in your home directory.
