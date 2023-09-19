@@ -25,12 +25,13 @@
 
 Run the following command to either install or update `glee`:
 
-For Linux/MacOS systems or Linux via WSL:
+### For Linux/MacOS systems or Linux via WSL:
 ```bash
 wget -O - https://raw.githubusercontent.com/HexmosTech/glee/main/install.sh | bash
 ```
 
-For Windows:
+### For Windows:
+
 Open the Command Prompt (cmd) as an administrator and execute the following command:
 ```cmd
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/HexmosTech/glee/main/install.bat', 'install.bat'); Start-Process 'install.bat';"
