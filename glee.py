@@ -172,34 +172,37 @@ def image_to_hash(image):
 
 def upload_images(token, html_data, IMAGE_BACKEND):
     # add two options s3 or ghost upload
-    uploaded_images = {}
-    if IMAGE_BACKEND == "ghost":
-        blog_image_list = get_images_from_post(html_data)
+    try:
+        uploaded_images = {}
+        if IMAGE_BACKEND == "ghost":
+            blog_image_list = get_images_from_post(html_data)
 
-    for image in mdlib.images:
-        hash_value, image_data = image_to_hash(image)
+        for image in mdlib.images:
+            hash_value, image_data = image_to_hash(image)
 
-        if image.startswith("http://") or image.startswith("https://"):
-            if IMAGE_BACKEND == "s3":
-                image_link = upload_to_s3(image_data, hash_value, logging)
+            if image.startswith("http://") or image.startswith("https://"):
+                if IMAGE_BACKEND == "s3":
+                    image_link = upload_to_s3(image_data, hash_value, logging)
+                else:
+                    # image comparison here
+                    image_link = upload_to_ghost(
+                        token, image_data, hash_value, blog_image_list, logging
+                    )
+
             else:
-                # image comparison here
-                image_link = upload_to_ghost(
-                    token, image_data, hash_value, blog_image_list, logging
-                )
+                if IMAGE_BACKEND == "s3":
+                    image_link = upload_to_s3(image, hash_value, logging)
+                else:
+                    image_link = upload_to_ghost(
+                        token, image, hash_value, blog_image_list, logging
+                    )
 
-        else:
-            if IMAGE_BACKEND == "s3":
-                image_link = upload_to_s3(image, hash_value, logging)
-            else:
-                image_link = upload_to_ghost(
-                    token, image, hash_value, blog_image_list, logging
-                )
+            uploaded_images[image] = image_link
 
-        uploaded_images[image] = image_link
-
-    logging.info("Uploaded images")
-    return uploaded_images
+        logging.info("Uploaded images")
+        return uploaded_images
+    except:
+        sys.exit("Error: Add content")
 
 
 def replace_image_links(post, img_map):
@@ -258,8 +261,10 @@ def post_to_ghost(meta, md):
     pid, updated_at, html_data, feature_image = get_post_id(meta["slug"], headers)
     if "feature_image" in meta:
         upload_feature_image(meta, token, feature_image)
-
+    else:
+        meta["feature_image"] = ""
     uploaded_images = upload_images(token, html_data, IMAGE_BACKEND)
+
     replace_image_links(meta, uploaded_images)
     post_obj = meta
 
