@@ -25,7 +25,7 @@
 
 Run the following command to either install or update `glee`:
 
-### For Linux/MacOS systems or Linux via WSL:
+### For Linux/MacOS systems or Linux via [WSL](https://ubuntu.com/wsl):
 ```bash
 wget -O - https://raw.githubusercontent.com/HexmosTech/glee/main/install.sh | bash
 ```
