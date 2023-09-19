@@ -86,7 +86,7 @@ def get_jwt():
         else:
             aud_value = f"/{GHOST_VERSION}/admin/"
         iat = int(date.now().timestamp())
-        
+
         h = {"iat": iat, "exp": iat + 5 * 60, "aud": aud_value}
         token = jwt.encode(
             h, bytes.fromhex(secret), algorithm="HS256", headers={"kid": id}
@@ -144,11 +144,12 @@ def make_request(headers, body, pid, updated_at):
 
     return
 
+
 def get_temp_dir():
-    if os.name == 'nt':  # Check if the operating system is Windows
-        return os.environ['TEMP']
+    if os.name == "nt":  # Check if the operating system is Windows
+        return os.environ["TEMP"]
     else:
-        return '/tmp/'
+        return "/tmp/"
 
 
 def image_to_hash(image):
@@ -212,23 +213,24 @@ def replace_image_links(post, img_map):
 def upload_feature_image(meta, token, feature_image):
     try:
         i = meta["feature_image"]
-        hash_value = sha256sum(i)
-        _, file_extension = os.path.splitext(i)
-        image_name = hash_value + file_extension
+        if i:
+            hash_value = sha256sum(i)
+            _, file_extension = os.path.splitext(i)
+            image_name = hash_value + file_extension
 
-        if IMAGE_BACKEND == "s3":
-            meta["feature_image"] = upload_to_s3(i, image_name, logging)
-        else:
-            if feature_image is not None:
-                feature_img_list = [feature_image]
+            if IMAGE_BACKEND == "s3":
+                meta["feature_image"] = upload_to_s3(i, image_name, logging)
             else:
-                feature_img_list = []
-            image_link = upload_to_ghost(
-                token, i, image_name, feature_img_list, logging
-            )
-            meta["feature_image"] = image_link
+                if feature_image is not None:
+                    feature_img_list = [feature_image]
+                else:
+                    feature_img_list = []
+                image_link = upload_to_ghost(
+                    token, i, image_name, feature_img_list, logging
+                )
+                meta["feature_image"] = image_link
 
-        logging.info("Uploaded feature image")
+            logging.info("Uploaded feature image")
     except Exception as e:
         logging.error("Error in feature image uploading", e)
 
@@ -243,7 +245,8 @@ def post_to_ghost(meta, md):
 
         return
 
-    if meta["sidebar_toc"]:
+    if "sidebar_toc" in meta and meta["sidebar_toc"]:
+        print("sidebar_toc")
         meta["codeinjection_head"] = style + sidebar_toc_head
         meta["codeinjection_foot"] = sidebar_toc_footer
     else:
@@ -253,8 +256,8 @@ def post_to_ghost(meta, md):
 
     headers = {"Authorization": "Ghost {}".format(token)}
     pid, updated_at, html_data, feature_image = get_post_id(meta["slug"], headers)
-
-    upload_feature_image(meta, token, feature_image)
+    if "feature_image" in meta:
+        upload_feature_image(meta, token, feature_image)
 
     uploaded_images = upload_images(token, html_data, IMAGE_BACKEND)
     replace_image_links(meta, uploaded_images)
