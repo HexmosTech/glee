@@ -36,9 +36,17 @@ fi
 
 sudo chmod +x $DEST_DIR
 
+config_file="$HOME/.glee.toml"
 
-echo "Downloading configuration file..."
-wget -O "$HOME/.glee.toml" $CONFIG_URL
+if [ ! -f "$config_file" ]; then
+    echo "Downloading configuration file..."
+    wget -O "$config_file" "$CONFIG_URL"
+    echo "Installation completed successfully!"
+    echo "Add the Ghost Configuration in $config_file file"
+else
+    echo "Update completed successfully!"
+    echo "Reusing the configurations from the $config_file file."
+    
+fi
 
-echo "Installation completed successfully!"
-echo "Add the Ghost and S3 Configuration in $HOME/.glee.toml file"
+
