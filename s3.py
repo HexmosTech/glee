@@ -30,7 +30,6 @@ def upload_to_s3(local_filepath, s3_filepath, logging):
         )
 
         image_link = f"{S3_BASE_URL}{s3_filepath}"
-        print(f"Uploaded {local_filepath} to {image_link}")
         return image_link
     except Exception as e:
         sys.exit(f"Error: {e}")

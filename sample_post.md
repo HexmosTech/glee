@@ -6,7 +6,7 @@ authors:
 # featured: false
 # status: draft
 # excerpt: null,
-# feature_image: ./smiley.png
+feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: true
 slug: testing-glee
 ---
@@ -47,18 +47,38 @@ You can make text **bold** using double asterisks or double underscores, and you
 
 ## Links
 
-You can create links like this: [glee](https://github.com/HexmosTech/glee).
+You can attach links like this: [glee](https://github.com/HexmosTech/glee).
 
 ## Images
 
 You can embed images like this:
+### jpg
 
-![sticky](./sticky.jpg)
+![sticky](./test_images/sticky.jpg)
+
+### png
+
 ![Markdown Logo](https://markdown-here.com/img/icon256.png)
-![smiley](./smiley.png)
+![smiley](./test_images/smiley.png)
 
-![sticky-cropped](./sticky-cropped.jpg)
+### jpeg
+![jpeg](./test_images/img.jpeg)
 
+
+### gif
+![gif](./test_images/Animhorse.gif)
+
+
+### svg
+
+![svg](./test_images/glee_banner.svg)
+
+### ico
+
+![ico](./test_images/icon.ico)
+
+### heic
+![heic](./test_images/apple.heic)
 ## Code
 
 You can include inline code using backticks (`) like `code`.
