@@ -10,7 +10,7 @@
 
 `glee` publishes markdown files into [Ghost](https://ghost.org/) blog posts. With glee, you can create and update ghost blogs. Since glee operates on plain markdown files, your blog posts are now git-friendly, allowing for easy collaboration.
 
-`glee` command will read **metadata** from the YAML preface of your Markdown post ([sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1)), convert the post content into HTML, store the content images in AWS S3, and then publish it to your Ghost platform. Set up the `glee` CLI tool with a single command.
+`glee` command will read **metadata** from the YAML preface of your Markdown post ([sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1)), convert the post content into HTML, Store the content images either in your Ghost database or on AWS S3, and then publish them to your Ghost platform. Set up the `glee` CLI tool with a single command.
 
 ## Benefits
 - Publish markdown files into Ghost blog post

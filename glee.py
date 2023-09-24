@@ -249,7 +249,6 @@ def post_to_ghost(meta, md):
         return
 
     if "sidebar_toc" in meta and meta["sidebar_toc"]:
-        print("sidebar_toc")
         meta["codeinjection_head"] = style + sidebar_toc_head
         meta["codeinjection_foot"] = sidebar_toc_footer
     else:
