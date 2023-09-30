@@ -1,4 +1,4 @@
-# glee: Publish Markdown Files to Ghost Blog 
+# glee: Dev-friendly Blogging Setup 
 
 <div align="center"> 
 <img src="assets/glee-readme-banner.png" width="90%" />
