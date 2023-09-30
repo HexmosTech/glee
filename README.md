@@ -7,15 +7,18 @@
 </div>
 
 ## Overview
+Most technical teams struggle to put together a modern and dev-friendly blogging setup.
+Our free product `glee` helps your devs compose, backup & collaborate on blog posts using markdown files
+so that they can ship awesome content without frustration.
 
-`glee` publishes markdown files into [Ghost](https://ghost.org/) blog posts. With glee, you can create and update ghost blogs. Since glee operates on plain markdown files, your blog posts are now git-friendly, allowing for easy collaboration.
+With glee, you can create and update [Ghost](https://ghost.org/) blogs. Since glee operates on plain markdown files, your blog posts are now git-friendly, allowing for easy collaboration.
 
 `glee` command will read **metadata** from the YAML preface of your Markdown post ([sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1)), convert the post content into HTML, Store the content images either in your Ghost database or on AWS S3, and then publish them to your Ghost platform. Set up the `glee` CLI tool with a single command.
 
 ## Benefits
 - Publish markdown files into Ghost blog post
 - Install and configure with minimal effort
-- Store images in ghost or  S3 for longevity and local previews
+- Multiple image backends (AWS S3, ghost)
 - Create and update posts with a single command
 - Support for syntax highlighting and Table of Contents
 - Collaborate with content writers in your team
