@@ -28,14 +28,20 @@ import sys
 
 parser = argparse.ArgumentParser(description="Publish Markdown Files to Ghost Blog")
 parser.add_argument(
-    "--config", action="store_true", help=" Show glee configuration file"
+    "--config", action="store_true", help="Show glee configuration file"
 )
-parser.add_argument("markdown_file", type=str, help="<path_to_markdown_file>")
+parser.add_argument(
+    "markdown_file", nargs="?", type=str, help="<path_to_markdown_file>"
+)
 parser.add_argument("--debug", action="store_true", help="Enable debug mode")
 
 args = parser.parse_args()
 if args.config:
     print_configuration(logging)
+
+if not args.markdown_file:
+    print("Usage: glee <path_to_markdown_file>")
+    sys.exit(1)
 
 
 log_format = "%(levelname)s:%(message)s"
