@@ -8,6 +8,12 @@ GHOST_VERSION = "v5" # eg: v5,v4... refer: https://github.com/HexmosTech/glee#gh
 
 GHOST_URL = ""       # eg: https://ghost-hosted-url/ghost
 
+[blog-configuration] # global configuration for all blog posts
+
+SIDEBAR_TOC = false  # enable/disable right sidebar in blogs.
+FEATURED = false     # enable/disable feature this post option.
+STATUS = "draft"     # options: "draft" or "published"
+
 [image-configuration]
 
 IMAGE_BACKEND = "ghost"  #options: "ghost" or "s3"

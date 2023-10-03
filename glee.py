@@ -132,19 +132,25 @@ def make_request(headers, body, pid, updated_at):
         if not pid:
             url = f"{POSTS_API_BASE}?source=html"
             r = requests.post(url, json=body, headers=headers)
-            preview_link = r.json()["posts"][0]["url"]
-            logging.info("Created new post")
-            logging.info(f"Blog preview link: {preview_link}")
+            if r.status_code == 200:
+                preview_link = r.json()["posts"][0]["url"]
 
+                logging.info("Created new post")
+                logging.info(f"Blog preview link: {preview_link}")
+            else:
+                raise Exception(r.json())
         else:
             body["posts"][0]["updated_at"] = updated_at
 
             url = f"{POSTS_API_BASE}{pid}?source=html"
 
             r = requests.put(url, json=body, headers=headers)
-            preview_link = r.json()["posts"][0]["url"]
-            logging.info(f"Updated existing post based on slug")
-            logging.info(f"Blog preview link: {preview_link}")
+            if r.status_code == 200:
+                preview_link = r.json()["posts"][0]["url"]
+                logging.info(f"Updated existing post based on slug")
+                logging.info(f"Blog preview link: {preview_link}")
+            else:
+                raise Exception(r.json())
     except Exception as e:
         logging.error(f"Error:{e}")
 
@@ -254,11 +260,7 @@ def post_to_ghost(meta, md):
 
         return
 
-    if "sidebar_toc" in meta and meta["sidebar_toc"]:
-        meta["codeinjection_head"] = style + sidebar_toc_head
-        meta["codeinjection_foot"] = sidebar_toc_footer
-    else:
-        meta["codeinjection_head"] = style
+    meta = add_blog_configurations(meta)
     meta["html"] = to_html(md)
     token = get_jwt()
 
@@ -275,6 +277,32 @@ def post_to_ghost(meta, md):
 
     body = {"posts": [post_obj]}
     return make_request(headers, body, pid, updated_at)
+
+
+def add_blog_configurations(meta):
+    try:
+        global_sidebar_toc = config.get("blog-configuration", {}).get("SIDEBAR_TOC")
+        global_featured = config.get("blog-configuration", {}).get("FEATURED")
+        global_status = config.get("blog-configuration", {}).get("STATUS")
+        if global_featured is None or global_status is None:
+            raise ValueError(
+                "Error: featured or status required for publishing blog post"
+            )
+
+        side_bar_toc = meta.get("sidebar_toc", global_sidebar_toc)
+        meta["featured"] = meta.get("featured", global_featured)
+        meta["status"] = meta.get("status", global_status)
+
+        if side_bar_toc:
+            meta["codeinjection_head"] = style + sidebar_toc_head
+            meta["codeinjection_foot"] = sidebar_toc_footer
+        else:
+            meta["codeinjection_head"] = style
+
+        return meta
+
+    except Exception as e:
+        sys.exit(e)
 
 
 if __name__ == "__main__":
