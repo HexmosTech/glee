@@ -284,14 +284,12 @@ def add_blog_configurations(meta):
         global_sidebar_toc = config.get("blog-configuration", {}).get("SIDEBAR_TOC")
         global_featured = config.get("blog-configuration", {}).get("FEATURED")
         global_status = config.get("blog-configuration", {}).get("STATUS")
-        if global_featured is None or global_status is None:
-            raise ValueError(
-                "Error: featured or status required for publishing blog post"
-            )
 
         side_bar_toc = meta.get("sidebar_toc", global_sidebar_toc)
         meta["featured"] = meta.get("featured", global_featured)
         meta["status"] = meta.get("status", global_status)
+        if meta["status"] is None or meta["featured"] is None:
+            raise Exception("required featured and status")
 
         if side_bar_toc:
             meta["codeinjection_head"] = style + sidebar_toc_head
@@ -302,7 +300,7 @@ def add_blog_configurations(meta):
         return meta
 
     except Exception as e:
-        sys.exit(e)
+        sys.exit(f'''Error: {e}''')
 
 
 if __name__ == "__main__":

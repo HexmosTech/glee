@@ -3,11 +3,11 @@ title:  'testing sample markdown file'
 authors:
 - linz07m@gmail.com
 # tags: []
-featured: false
-status: draft
+# featured: false
+# status: draft
 # excerpt: null,
 feature_image: ./test_images/Animhorse.gif
-sidebar_toc: false
+# sidebar_toc: false
 slug: testing-glee
 ---
 
