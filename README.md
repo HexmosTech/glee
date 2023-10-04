@@ -84,6 +84,9 @@ The version notation is as follows: 'v4' represents version 4, 'v5' represents v
 
 #### Ghost URL
 The `GHOST_URL` represents the domain where your Ghost blog is hosted.
+### Blog Configuration
+
+The `blog-configuration` section in the `.glee.toml` file serves as the global configuration for all blog posts published using `glee`. For instance, if `sidebar_toc` is set to `true` in the `blog-configuration`, then all blog posts published through glee will have the sidebar table of contents enabled. However, you have the flexibility to customize the configuration for individual blogs by utilizing the local configuration defined within the `YAML` structure of your markdown file.
 
 ### Image Storage Backend Configuration
 
