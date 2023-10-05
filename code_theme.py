@@ -388,7 +388,6 @@ code_hilite_theme_native = """
 
 def select_codehilite_theme(theme_name):
     try:
-        
         current_themes = {
             "monokai": code_hilite_theme_monokai,
             "native": code_hilite_theme_native,

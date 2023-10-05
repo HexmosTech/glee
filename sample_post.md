@@ -8,7 +8,7 @@ authors:
 # excerpt: null,
 feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: false
-code_hilite_theme: vim
+# code_hilite_theme: vim
 slug: testing-glee
 ---
 

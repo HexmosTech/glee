@@ -8,7 +8,7 @@ from markdown.extensions.fenced_code import FencedCodeExtension
 from markdown.extensions.codehilite import CodeHiliteExtension
 from markdown.extensions.tables import TableExtension
 
-from styles import  default_style,sidebar_toc_head, sidebar_toc_footer
+from styles import default_style, sidebar_toc_head, sidebar_toc_footer
 from code_theme import select_codehilite_theme
 from images import ImgExtExtension
 from hasher import sha256sum
@@ -289,26 +289,27 @@ def add_blog_configurations(meta):
         global_theme = config.get("blog-configuration", {}).get("CODE-HILITE-THEME")
 
         side_bar_toc = meta.get("sidebar_toc", global_sidebar_toc)
-        code_theme = meta.get("code_hilite_theme",global_theme)
+        code_theme = meta.get("code_hilite_theme", global_theme)
         meta["featured"] = meta.get("featured", global_featured)
         meta["status"] = meta.get("status", global_status)
         if meta["status"] is None or meta["featured"] is None:
             raise Exception("required featured and status")
-        
+
         # theme manipulation from here
         theme = select_codehilite_theme(code_theme)
-        
+
         if side_bar_toc:
-            meta["codeinjection_head"] =  f"""<style>{default_style+theme}</style>""" + sidebar_toc_head
+            meta["codeinjection_head"] = (
+                f"""<style>{default_style+theme}</style>""" + sidebar_toc_head
+            )
             meta["codeinjection_foot"] = sidebar_toc_footer
         else:
-            
             meta["codeinjection_head"] = f"""<style>{default_style+theme}</style>"""
 
         return meta
 
     except Exception as e:
-        sys.exit(f'''Error: {e}''')
+        sys.exit(f"""Error: {e}""")
 
 
 if __name__ == "__main__":

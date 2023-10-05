@@ -1,4 +1,3 @@
-
 default_style = """
    pre { line-height: 125%; }
    td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
