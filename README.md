@@ -188,6 +188,8 @@ The YAML field `sidebar_toc` determines including sidebar table of content. Pick
 
 ### Syntax Highlighting
 
+glee supports five themes: Monokai, Native, Pastie, Vim, and Fruity, for highlighting your code block. You can configure the theme globally in the glee configuration file inside `blog-post-configuration` or for a specific blog post using the `code_hilite_theme` option in the YAML structure. The default theme is Monokai.
+
 Languages supported: https://pygments.org/languages/
 
 Fenced code blocks docs: https://python-markdown.github.io/extensions/fenced_code_blocks/
