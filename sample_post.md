@@ -1,10 +1,10 @@
 ---
 title:  'testing sample markdown file'
 authors:
-- linz07m@gmail.com
+- sample@gmail.com
 # tags: []
-# featured: false
-# status: draft
+featured: false
+status: draft
 # excerpt: null,
 feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: false
@@ -14,45 +14,6 @@ slug: testing-glee
 
 <!-- [TOC] -->
 
-```python
-import shutil
-import ansible.constants as C
-from ansible.executor.task_queue_manager import TaskQueueManager
-from ansible.module_utils.common.collections import ImmutableDict
-from ansible.inventory.manager import InventoryManager
-from ansible.parsing.dataloader import DataLoader
-from ansible.vars.manager import VariableManager
-from ansible import context
-from ansible.executor.playbook_executor import PlaybookExecutor
-import os
-from ansible.utils.display import Display
-import getpass
-
-loader = DataLoader()
-Configure the CLI arguments
-context.CLIARGS = ImmutableDict(
-    listtasks=False,
-    listhosts=False,
-    syntax=False,
-    connection="smart",
-    forks=10,
-    become=False,
-    verbosity=4,
-    check=False,
-    start_at_task=None,
-    become_method= 'sudo',
-      become_user= None, 
-      become_ask_pass= True,
-)
-```
-
-```bash
-python3 -m nuitka --onefile   \
---include-package-data=ansible:'*.py' \
---include-package-data=ansible:'*.yml' \
---include-data-files=one_installer.yml=one_installer.yml \
- executor.py
-```
 # My Simple Markdown File
 
 This is  basic Markdown file with some common formatting elements.
