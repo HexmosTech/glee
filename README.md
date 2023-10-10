@@ -25,8 +25,9 @@ With glee, you can create and update [Ghost](https://ghost.org/) blogs. Since gl
 - 100% Free and Open Source Software
 
 ## Watch Demo
-<iframe width="560" height="315" src="https://www.youtube.com/embed/nlM4b65_GSU" frameborder="0" allowfullscreen></iframe>
-      
+[gleeDemo](https://www.youtube.com/watch?v=nlM4b65_GSU)
+<!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/nlM4b65_GSU" frameborder="0" allowfullscreen></iframe>
+       -->
 ## Installation/Update
 
 Run the following command to either install or update `glee`:
