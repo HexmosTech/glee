@@ -13,6 +13,7 @@ GHOST_URL = ""       # eg: https://ghost-hosted-url/ghost
 SIDEBAR_TOC = false  # enable/disable right sidebar in blogs.
 FEATURED = false     # enable/disable feature this post option.
 STATUS = "draft"     # options: "draft" or "published"
+CODE_HILITE_THEME = "monokai" #other options: native, pastie, vim, fruity
 
 [image-configuration]
 

@@ -286,7 +286,7 @@ def add_blog_configurations(meta):
         global_sidebar_toc = config.get("blog-configuration", {}).get("SIDEBAR_TOC")
         global_featured = config.get("blog-configuration", {}).get("FEATURED")
         global_status = config.get("blog-configuration", {}).get("STATUS")
-        global_theme = config.get("blog-configuration", {}).get("CODE-HILITE-THEME")
+        global_theme = config.get("blog-configuration", {}).get("CODE_HILITE_THEME")
 
         side_bar_toc = meta.get("sidebar_toc", global_sidebar_toc)
         code_theme = meta.get("code_hilite_theme", global_theme)

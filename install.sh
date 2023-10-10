@@ -42,7 +42,7 @@ if [ ! -f "$config_file" ]; then
     echo "Downloading configuration file..."
     wget -O "$config_file" "$CONFIG_URL"
     echo "Installation completed successfully!"
-    echo "Add the Ghost Configuration in $config_file file"
+    echo "Add the Ghost Configuration in $config_file file for using glee."
 else
     echo "Update completed successfully!"
     echo "Reusing the configurations from the $config_file file."
