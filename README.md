@@ -1,12 +1,19 @@
-# glee: Dev-friendly Blogging Setup 
+# glee: Dev-friendly Blogging Setup
 
-<div align="center"> 
-<img src="assets/glee-readme-banner.png" width="90%" />
+<div align="center">
 
 [![Binary Build And Release](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml)
+
+</div>
+
+<img src="assets/glee-readme-banner.png" width="90%" />
+
+<div align="center">
+<a href="https://www.producthunt.com/posts/glee-2?utm_source=badge-top-post-badge&utm_medium=badge&utm_souce=badge-glee&#0045;2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=418974&theme=light&period=daily" alt="glee - Dev&#0045;friendly&#0032;blogging&#0032;setup | Product Hunt" style="margin-top:20px;width: 250px; height: 54px;" width="250" height="54" /></a>
 </div>
 
 ## Overview
+
 Most technical teams struggle to put together a modern and dev-friendly blogging setup.
 Our free product `glee` helps your devs compose, backup & collaborate on blog posts using markdown files
 so that they can ship awesome content without frustration.
@@ -16,6 +23,7 @@ With glee, you can create and update [Ghost](https://ghost.org/) blogs. Since gl
 `glee` command will read **metadata** from the YAML preface of your Markdown post ([sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1)), convert the post content into HTML, Store the content images either in your Ghost database or on AWS S3, and then publish them to your Ghost platform. Set up the `glee` CLI tool with a single command.
 
 ## Benefits
+
 - Publish markdown files into Ghost blog post
 - Install and configure with minimal effort
 - Multiple image backends (AWS S3, ghost)
@@ -27,11 +35,13 @@ With glee, you can create and update [Ghost](https://ghost.org/) blogs. Since gl
 ## Watch Demo
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/nlM4b65_GSU/0.jpg)](http://www.youtube.com/watch?v=nlM4b65_GSU "glee: Dev-friendly Blogging Setup")
+
 ## Installation/Update
 
 Run the following command to either install or update `glee`:
 
 ### For Linux/MacOS systems or Linux via [WSL](https://ubuntu.com/wsl):
+
 ```bash
 wget -O - https://raw.githubusercontent.com/HexmosTech/glee/main/install.sh | bash
 ```
@@ -39,15 +49,19 @@ wget -O - https://raw.githubusercontent.com/HexmosTech/glee/main/install.sh | ba
 ### For Windows:
 
 Open the Command Prompt (cmd) as an administrator and execute the following command:
+
 ```cmd
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/HexmosTech/glee/main/install.bat', 'install.bat'); Start-Process 'install.bat';"
 ```
+
 Alternatively, you can download the [executable (exe) file](https://github.com/HexmosTech/glee/releases/latest/download/glee_windows.exe) and then move it into the `system32` folder using the command:
 
 ```cmd
 Move-Item -Path "C:\Path\to\Downloads\glee_windows.exe" -Destination "C:\Windows\system32\glee.exe"
 ```
+
 Note: If you encounter any security issues on Windows, turn off the [Real-time protection](https://support.microsoft.com/en-us/windows/turn-off-defender-antivirus-protection-in-windows-security-99e6004f-c54c-8509-773c-a4d776b77960) in the virus and threat protection settings.
+
 ## Configuration
 
 After the installation, `glee` will create a configuration file ([.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml)) in your home directory.
@@ -55,15 +69,18 @@ After the installation, `glee` will create a configuration file ([.glee.toml](ht
 Open the configuration file `$HOME/.glee.toml` and modify the ghost, image backend and AWS S3 credential (optional).
 
 ### Ghost Configuration
+
 #### Ghost Admin API Key
+
 Admin API keys are used to generate short-lived single-use JSON Web Tokens (JWTs), which are then used to authenticate a request (GET,POST,PUT) using Ghost Admin API.
+
 - Admin API keys can be obtained by creating a new Custom Integration under the Integrations screen in Ghost Admin.
  <p align="left">
   <a href="">
   <img alt="img-name" src="assets/glee-custom-integration.png" width="450"> 
     <br/>
    </a>
-</p>  
+</p>
 
 - Save the Custom Integration and Copy the Admin API Key to [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml) file.
 
@@ -72,21 +89,25 @@ Admin API keys are used to generate short-lived single-use JSON Web Tokens (JWTs
   <img alt="img-name" src="assets/glee-admin-api-edited.jpg" width="450"> 
     <br/>
    </a>
-</p>  
+</p>
 
 #### Ghost Version
-Include the Ghost platform version in the TOML file. 
+
+Include the Ghost platform version in the TOML file.
 You can find the version in the Ghost admin settings.
 The version notation is as follows: 'v4' represents version 4, 'v5' represents version 5, and so forth.
+
  <p align="left">
   <a href="">
   <img alt="img-name" src="assets/ghost -version.png" width="450"> 
     <br/>
    </a>
-</p>  
+</p>
 
 #### Ghost URL
+
 The `GHOST_URL` represents the domain where your Ghost blog is hosted.
+
 ### Blog Configuration
 
 The `blog-configuration` section in the `.glee.toml` file serves as the global configuration for all blog posts published using `glee`. For instance, if `sidebar_toc` is set to `true` in the `blog-configuration`, then all blog posts published through glee will have the sidebar table of contents enabled. However, you have the flexibility to customize the configuration for individual blogs by utilizing the local configuration defined within the `YAML` structure of your markdown file.
@@ -97,32 +118,33 @@ All images in the markdown file can be stored either in your `ghost database` or
 
 1. **Your Ghost Database (default)**
 
-  You can store the image in the same db where your content resides. To use Ghost as an image backend provide 
-  ```toml
-  [image-configuration]
+You can store the image in the same db where your content resides. To use Ghost as an image backend provide
 
-  IMAGE_BACKEND = "ghost"  
-  ```
-  in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml#L13) file.
+```toml
+[image-configuration]
+
+IMAGE_BACKEND = "ghost"
+```
+
+in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml#L13) file.
 
 2. **AWS S3**
 
-  Or, you can store the images in your `AWS S3` bucket as well. To use `S3` as an image backend provide 
-  ```toml
-  [image-configuration]
-  
-  IMAGE_BACKEND = "s3"
-  ```
-  in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml#L13) file.
+Or, you can store the images in your `AWS S3` bucket as well. To use `S3` as an image backend provide
+
+```toml
+[image-configuration]
+
+IMAGE_BACKEND = "s3"
+```
+
+in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml#L13) file.
 
 Also, Configure the `S3` Credentials in the [.glee.toml](https://github.com/HexmosTech/glee/blob/main/.glee.toml) file.
 
 Find further [information](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) and [tutorial](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) to learn more about `AWS S3`.
 
-
-
-
-## Usage 
+## Usage
 
 After installation and configuration, you can convert Markdown file into a Ghost blog post using the following command:
 
@@ -133,6 +155,7 @@ glee your-post.md
 ## Markdown File Structure
 
 The Markdown file used by `glee` consists mainly of two parts:
+
 - A YAML Interface for metadata
 - Content
 
@@ -140,20 +163,22 @@ The Markdown file used by `glee` consists mainly of two parts:
 ---
 yaml
 ---
+
 [TOC]
 your content
 ```
 
 ### Example markdown file
 
-See [sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1) for learning how to structure an example post. 
+See [sample_post.md](https://github.com/HexmosTech/glee/blob/main/sample_post.md?plain=1) for learning how to structure an example post.
 Find additional field reference in [official docs](https://ghost.org/docs/admin-api/#posts).
 
 ## Features
+
 ### Specifying author
 
 The `authors` field in the markdown frontmatter can specify multiple
-**staff emails**. Note that this is different from *member emails*.
+**staff emails**. Note that this is different from _member emails_.
 
 ### Draft vs Publishing
 
@@ -180,14 +205,14 @@ For Adding TOC include the string `[TOC]` in your content area:
 ---
 yaml
 ---
+
 [TOC]
 your content
 ```
+
 2. TOC as Sidebar
 
 The YAML field `sidebar_toc` determines including sidebar table of content. Pick `sidebar_toc:true` or `sidebar_toc:false` as required.
-
-
 
 ### Syntax Highlighting
 
@@ -198,35 +223,43 @@ Languages supported: https://pygments.org/languages/
 Fenced code blocks docs: https://python-markdown.github.io/extensions/fenced_code_blocks/
 
 ### Collaboration
-When multiple team members are working simultaneously on the same Ghost blog, they can collaborate seamlessly using any version control system. `glee` will update the blog content with each `glee` command.
 
+When multiple team members are working simultaneously on the same Ghost blog, they can collaborate seamlessly using any version control system. `glee` will update the blog content with each `glee` command.
 
 ## Debugging
 
 Utilize the `--debug` option with your glee command to uncover underlying issues.
+
 ```bash
- glee sample_post.md --debug 
+ glee sample_post.md --debug
 ```
+
 ## View Configuration
+
 Utilize the `--config` option with your glee command to view the glee configurations.
+
 ```bash
 glee sample_post.md --config
 ```
 
 ## Local Testing
+
 Clone the repository and test the `glee` tool locally.
 
 ### Option 1: Build into a binary
+
 Create a local standalone executable using nuitka. run the command:
 
 ```bash
 ./installbin.sh
 ```
+
 After it's done, you can simply do:
 
 ```bash
 glee your-post.md
 ```
+
 ### Option 2: Poetry standard method
 
 ```bash
