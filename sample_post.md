@@ -2,10 +2,10 @@
 title:  'testing sample markdown file'
 authors:
 - sample@gmail.com
-# tags: []
+tags: ["draft"]
 featured: false
 status: draft
-# excerpt: null,
+custom_excerpt: This is a customexcerpt
 feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: false
 # code_hilite_theme: vim
@@ -15,6 +15,8 @@ slug: testing-glee
 <!-- [TOC] -->
 
 # My Simple Markdown File
+
+ 
 
 This is  basic Markdown file with some common formatting elements.
 
@@ -92,6 +94,7 @@ def hello_world():
     print("Hello, world!")
 ```
 
+
 ## Table 
 
 | Name      | Age | Occupation |
@@ -114,4 +117,70 @@ def hello_world():
   <li>Milk</li>
 </ul>
 
+
+<div id="hex-ad-wrapper" style="background-color: #fff">
+   <div id="hex-ad-div1" style="display: inline-block">
+      <a
+         href="https://hexmos.com/365reasons?utm_source=https://journal.hexmos.com/basic-rules-of-design&utm_medium=bannerad&utm_campaign=365reasons"
+         target="_blank"
+         >
+      <img
+         style="border-radius: 5px"
+         class="hex-ad-img-fluid"
+         src="https://karma-src-x02msdf8-23.s3.ap-south-1.amazonaws.com/product-menu-logo/365bannersmall.png"
+         />
+      </a>
+   </div>
+   <div
+      id="hex-ad-div2"
+      style="vertical-align: top; display: inline-block; width: 360px"
+      >
+      <div id="hex-ad-card-content" style="padding-top: 5px; padding-bottom: 5px">
+         <p style="padding-top: 5px">
+            <b>
+            1 powerful reason a day nudging you to read <br />
+            so that you can read more, and level up in life.
+            </b>
+         </p>
+         <p>Sent throughout the year. Absolutely FREE.</p>
+         <a
+            href="https://hexmos.com/365reasons?utm_source=https://journal.hexmos.com/basic-rules-of-design&utm_medium=bannerad&utm_campaign=365reasons"
+            target="_blank"
+            >
+         <button
+            class="hex-ad-button-55"
+            role="button"
+            style="
+            align-self: center;
+            background-color: #fff;
+            background-image: none;
+            background-position: 0 90%;
+            background-repeat: repeat no-repeat;
+            background-size: 4px 3px;
+            border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
+            border-style: solid;
+            border-width: 2px;
+            box-shadow: rgba(0, 0, 0, 0.2) 15px 28px 25px -18px;
+            box-sizing: border-box;
+            color: #41403e;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Neucha, sans-serif;
+            font-size: 1rem;
+            outline: none;
+            padding: 0.75rem;
+            text-decoration: none;
+            transition: all 235ms ease-in-out;
+            border-bottom-left-radius: 15px 255px;
+            border-bottom-right-radius: 225px 15px;
+            border-top-left-radius: 255px 15px;
+            border-top-right-radius: 15px 225px;
+            "
+            >
+         SUBSCRIBE
+         </button>
+         </a>
+      </div>
+   </div>
+</div>
 

@@ -222,7 +222,10 @@ def upload_images(token, html_data, IMAGE_BACKEND):
 def replace_image_links(post, img_map):
     soup = BeautifulSoup(post["html"], features="html.parser")
     for img in soup.find_all("img"):
-        img["src"] = img_map[img["src"]]
+        if img["src"] in img_map:
+            img["src"] = img_map[img["src"]]
+        else:
+            img["src"] = img["src"]
     result = str(soup)
     post["html"] = result
 
@@ -273,7 +276,6 @@ def post_to_ghost(meta, md):
     else:
         meta["feature_image"] = ""
     uploaded_images = upload_images(token, html_data, IMAGE_BACKEND)
-
     replace_image_links(meta, uploaded_images)
     post_obj = meta
 
