@@ -97,7 +97,7 @@ jobs:
           name: glee_linux.bin
           path: /tmp
 
-      - name: Download macOS artifact
+      # - name: Download macOS artifact
         uses: actions/download-artifact@v2
         with:
           name: glee_mac.bin
@@ -131,7 +131,7 @@ jobs:
           asset_name: glee_linux.bin
           asset_content_type: application/octet-stream
 
-      - name: Upload macOS Release Asset
+      # - name: Upload macOS Release Asset
         id: upload-macos-release-asset
         uses: actions/upload-release-asset@v1
         env:
