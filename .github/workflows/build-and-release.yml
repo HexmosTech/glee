@@ -87,7 +87,8 @@ jobs:
 
   Binary-Release:
     name: Create Release
-    needs: [Binary-Build-Linux, Binary-Build-Mac,Binary-Build-Windows]
+    # needs: [Binary-Build-Linux, Binary-Build-Mac,Binary-Build-Windows]
+    needs: [Binary-Build-Linux,Binary-Build-Windows]
     runs-on: ubuntu-latest
     steps:
       - name: Download Linux artifact
