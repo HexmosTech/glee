@@ -184,3 +184,82 @@ def hello_world():
    </div>
 </div>
 
+
+
+
+   <div id="hex-ad2-div1" style="display: inline-block">
+      <a
+         href="https://hexmos.com/feedzap?utm_source=https://journal.hexmos.com/css-mistakes/&utm_medium=bannerad&utm_campaign=fz"
+         target="_blank"
+         >
+      <img
+         style="
+         border-radius: 5px;
+         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+         0 6px 20px 0 rgba(0, 0, 0, 0.19);
+         "
+         class="hex-ad2-img-fluid"
+         src="https://karma-src-x02msdf8-23.s3.ap-south-1.amazonaws.com/product-menu-logo/feedzapbanner.png"
+         />
+      </a>
+   </div>
+   <div  id="hex-ad2-div2"
+      style="
+      vertical-align: top;
+      display: inline-block;
+      width: 360px;
+      margin-left: 10px;
+      "
+      >
+      <div
+         id="hex-ad2-card-content"
+         style="padding-top: 5px; padding-bottom: 5px"
+         >
+         <p><b>FeedZap: Read 2X Books This Year</b></p>
+         <p style="padding-top: 15px">
+            FeedZap helps you
+            <b>consume your books through a healthy, snackable feed</b>, so that you
+            can read more with less time, effort and energy.
+         </p>
+         <a
+            href="https://hexmos.com/feedzap?utm_source=https://journal.hexmos.com/css-mistakes/&utm_medium=bannerad&utm_campaign=fz"
+            target="_blank"
+            >
+         <button
+            class="hex-ad2-button-55"
+            role="button"
+            onclick="openFeedzap()"
+            style="
+            margin-top: 5px;
+            align-self: center;
+            background-color: #fff;
+            background-image: none;
+            background-position: 0 90%;
+            background-repeat: repeat no-repeat;
+            background-size: 4px 3px;
+            border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
+            border-style: solid;
+            border-width: 2px;
+            box-shadow: rgba(0, 0, 0, 0.2) 15px 28px 25px -18px;
+            box-sizing: border-box;
+            color: #41403e;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Neucha, sans-serif;
+            font-size: 1rem;
+            outline: none;
+            padding: 0.75rem;
+            text-decoration: none;
+            transition: all 235ms ease-in-out;
+            border-bottom-left-radius: 15px 255px;
+            border-bottom-right-radius: 225px 15px;
+            border-top-left-radius: 255px 15px;
+            border-top-right-radius: 15px 225px;
+            "
+            >
+         BUY
+         </button>
+         </a>
+      </div>
+   </div>
+</div>

@@ -36,6 +36,7 @@ jobs:
   Binary-Build-Mac:
     name: Build For Mac OS
     runs-on: macos-latest
+    if: false
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
