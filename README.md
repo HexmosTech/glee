@@ -175,6 +175,47 @@ Find additional field reference in [official docs](https://ghost.org/docs/admin-
 
 ## Features
 
+
+### Platform-Specific Titles
+With Glee, you can customize the title of your article for users coming from various platforms such as Reddit, HN, Medium, etc. The `yaml` syntax for handling multiple titles is as follows:
+
+
+
+```yaml
+title:
+   default: new default title
+   hn: title from glee for HN
+   reddit: title from glee for Reddit
+```
+If you only need a single title, use the following syntax:
+
+```yaml
+title: your default title
+```
+
+Additionally, you can enhance the user experience by adding the following CSS style to create a transition effect when switching titles:
+
+```css
+<style>
+    .article-title {
+      opacity: 0;
+       filter: blur(3px);
+      animation: fadeIn 1s ease 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+         filter: blur(0px);
+      }
+    }
+</style>
+```
+
+Include the above code snippet in the `Admin Dashboard -> Settings -> Code Injection -> Site Header`.
+
+Remember to specify the src query parameter when sharing your article on platforms. For example: https://journal.hexmos.com/spam-detection-ml/?src=reddit
+
 ### Specifying author
 
 The `authors` field in the markdown frontmatter can specify multiple
