@@ -336,19 +336,8 @@ def inject_multi_titles(meta):
             meta[
                 "codeinjection_head"
             ] = f"""<script>
-                document.addEventListener("DOMContentLoaded", function() {{
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const articleTitleElement = document.querySelector('.article-title');
-                    const title = {title_data_str};
-                    if (urlParams.has('src')) {{
-                        const srcValue = urlParams.get('src');
-                        if (title[srcValue] !== undefined) {{
-                            articleTitleElement.textContent = title[srcValue];
-                            document.title = title[srcValue];
-                        }}
-                    }}
-                }});
-            </script>"""
+                changetitle({title_data_str});
+                </script>"""
 
     except KeyError:
         sys.exit(f"""Error: missing default title""")

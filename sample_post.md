@@ -1,16 +1,19 @@
 ---
-title:
-   default: new default title
-   hn: title from glee for HN
-   reddit: title from glee for reddit
+# title:
+#    default: new updated default title
+#    hn: updated title from glee for HN
+#    reddit: updated title from glee for reddit
+#    # medium: title for glee for medium
+#    devto: title for devto
 
-# title: default title for all time
+title: default title for all time
 
 authors:
 - sample@gmail.com
 tags: ["draft"]
 featured: false
 status: draft
+
 custom_excerpt: This is a custom excerpt
 feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: false
