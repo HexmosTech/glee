@@ -183,7 +183,6 @@ First, include the below code snippet in the `Admin Dashboard -> Settings -> Cod
 
 ```js
 <script>
-
 function changetitle(title_data_str) {
     document.addEventListener("DOMContentLoaded", function() {
         {
@@ -214,6 +213,8 @@ title:
    default: new default title
    hn: title from glee for HN
    reddit: title from glee for Reddit
+   ....
+   ....
 ```
 
 If you only need a single title, use the following syntax:
