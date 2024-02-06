@@ -177,7 +177,7 @@ Find additional field reference in [official docs](https://ghost.org/docs/admin-
 
 
 ### Platform-Specific Titles
-With Glee, you can customize the title of your article for users coming from various platforms such as Reddit, HN, Medium, etc. The `yaml` syntax for handling multiple titles is as follows:
+With glee, you can customize the title of your article for users coming from various platforms such as Reddit, HN, Medium, etc. The `yaml` syntax for handling multiple titles is as follows:
 
 
 
@@ -214,7 +214,7 @@ Additionally, you can enhance the user experience by adding the following CSS st
 
 Include the above code snippet in the `Admin Dashboard -> Settings -> Code Injection -> Site Header`.
 
-Remember to specify the src query parameter when sharing your article on platforms. For example: https://journal.hexmos.com/spam-detection-ml/?src=reddit
+Remember to specify the `src` query parameter when sharing your article on platforms. For example: https://journal.hexmos.com/spam-detection-ml/?src=reddit
 
 ### Specifying author
 

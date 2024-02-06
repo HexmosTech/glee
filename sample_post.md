@@ -1,8 +1,10 @@
 ---
 title:
    default: new default title
-   hn: title from glee to HN
-   reddit: title from glee to reddit
+   hn: title from glee for HN
+   reddit: title from glee for reddit
+
+# title: default title for all time
 
 authors:
 - sample@gmail.com
