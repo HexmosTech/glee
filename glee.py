@@ -16,6 +16,7 @@ from s3 import upload_to_s3
 from bs4 import BeautifulSoup
 import os
 import shutil
+import json
 
 from datetime import datetime as date
 from handle_config import (
@@ -264,9 +265,10 @@ def post_to_ghost(meta, md):
         )
 
         return
-
+    inject_multi_titles(meta)
     meta = add_blog_configurations(meta)
     meta["html"] = to_html(md)
+
     token = get_jwt()
 
     headers = {"Authorization": "Ghost {}".format(token)}
@@ -301,17 +303,59 @@ def add_blog_configurations(meta):
         theme = select_codehilite_theme(code_theme)
 
         if side_bar_toc:
-            meta["codeinjection_head"] = (
+            meta["codeinjection_head"] += (
                 f"""<style>{default_style+theme}</style>""" + sidebar_toc_head
             )
             meta["codeinjection_foot"] = sidebar_toc_footer
         else:
-            meta["codeinjection_head"] = f"""<style>{default_style+theme}</style>"""
+            meta["codeinjection_head"] += f"""<style>{default_style+theme}</style>"""
 
         return meta
 
     except Exception as e:
         sys.exit(f"""Error: {e}""")
+
+
+def inject_multi_titles(meta):
+    meta["codeinjection_head"] = ""
+    try:
+        title_data = meta["title"]
+
+        if isinstance(title_data, str):  # Title is a string
+            pass
+        elif isinstance(title_data, dict):  # Title is a dictionary
+            default_title = title_data.get("default")
+
+            if "default" not in title_data:
+                raise KeyError("Missing 'default' key in title_data")
+
+            meta["title"] = default_title
+
+            title_data_str = json.dumps(title_data)
+
+            meta[
+                "codeinjection_head"
+            ] = f"""<script>
+                document.addEventListener("DOMContentLoaded", function() {{
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const articleTitleElement = document.querySelector('.article-title');
+                    const title = {title_data_str};
+                    if (urlParams.has('src')) {{
+                        const srcValue = urlParams.get('src');
+                        if (title[srcValue] !== undefined) {{
+                            articleTitleElement.textContent = title[srcValue];
+                            document.title = title[srcValue];
+                        }}
+                    }}
+                }});
+            </script>"""
+
+    except KeyError:
+        sys.exit(f"""Error: missing default title""")
+
+    except Exception as e:
+        logging.error("error in title updating", e)
+        pass
 
 
 if __name__ == "__main__":

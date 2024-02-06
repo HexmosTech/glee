@@ -1,11 +1,15 @@
 ---
-title:  'testing sample markdown file'
+title:
+   default: new default title
+   hn: title from glee to HN
+   reddit: title from glee to reddit
+
 authors:
 - sample@gmail.com
 tags: ["draft"]
 featured: false
 status: draft
-custom_excerpt: This is a customexcerpt
+custom_excerpt: This is a custom excerpt
 feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: false
 # code_hilite_theme: vim
@@ -263,3 +267,44 @@ def hello_world():
       </div>
    </div>
 </div>
+
+
+  <style>
+    .article-title {
+      opacity: 0;
+       filter: blur(3px);
+      animation: fadeIn 1s ease 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+         filter: blur(0px);
+      }
+    }
+  </style>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const articleTitleElement = document.querySelector('.article-title');
+      if (urlParams.has('src')) {
+        const srcValue = urlParams.get('src');
+       
+        switch (srcValue) {
+          case 'hn':
+            articleTitleElement.textContent = 'New Title for HN';
+            document.title = 'New Title for HN'
+            break;
+          case 'reddit':
+            articleTitleElement.textContent = 'New Title for Reddit';
+            document.title = 'New Title for Reddit';
+            break;
+          default:
+            break;
+        }
+      
+      }
+    });
+  </script>
