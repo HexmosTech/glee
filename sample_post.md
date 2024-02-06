@@ -1,12 +1,12 @@
 ---
-# title:
-#    default: new updated default title
-#    hn: updated title from glee for HN
-#    reddit: updated title from glee for reddit
-#    # medium: title for glee for medium
-#    devto: title for devto
+title:
+   default: new updated default title
+   hn: updated title from glee for HN
+   reddit: updated title from glee for reddit
+   # medium: title for glee for medium
+   devto: title for devto
 
-title: default title for all time
+# title: default title for all time
 
 authors:
 - sample@gmail.com

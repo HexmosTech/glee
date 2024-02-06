@@ -179,7 +179,35 @@ Find additional field reference in [official docs](https://ghost.org/docs/admin-
 ### Platform-Specific Titles
 With glee, you can customize the title of your article for users coming from various platforms such as Reddit, HN, Medium, etc. The `yaml` syntax for handling multiple titles is as follows:
 
+First, include the below code snippet in the `Admin Dashboard -> Settings -> Code Injection -> Site Header`:
 
+```js
+<script>
+
+function changetitle(title_data_str) {
+    document.addEventListener("DOMContentLoaded", function() {
+        {
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleTitleElement = document.querySelector('.article-title');
+            const title = title_data_str;
+            if (urlParams.has('src')) {
+                {
+                    const srcValue = urlParams.get('src');
+                    if (title[srcValue] !== undefined) {
+                        {
+                            articleTitleElement.textContent = title[srcValue];
+                            document.title = title[srcValue];
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+</script>
+```
+
+Then, inside the YAML file:
 
 ```yaml
 title:
@@ -187,6 +215,7 @@ title:
    hn: title from glee for HN
    reddit: title from glee for Reddit
 ```
+
 If you only need a single title, use the following syntax:
 
 ```yaml
