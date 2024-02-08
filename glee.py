@@ -360,4 +360,7 @@ def inject_multi_titles(meta):
 
 if __name__ == "__main__":
     post = frontmatter.load(args.markdown_file)
+    print(post.metadata)
+    print('-----')
+    print(post.content)
     post_to_ghost(post.metadata, post.content)
