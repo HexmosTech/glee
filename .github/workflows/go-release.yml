@@ -1,8 +1,8 @@
 name: glee release
 on:
   push:
-    branches:
-      - glee-in-go
+    # branches:
+    #   - glee-in-go
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
