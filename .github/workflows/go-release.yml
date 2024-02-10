@@ -31,7 +31,9 @@ jobs:
       shell: bash
 
     - name: Install dependencies
-      run: go mod tidy
+      run: |
+        ls -l
+        go mod tidy
 
     - name: Build and Release
       uses: wangyoucao577/go-release-action@v1.32
