@@ -1,5 +1,5 @@
 name: glee 
-on: [push]
+# on: [push]
 
 
 
