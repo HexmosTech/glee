@@ -23,5 +23,6 @@ jobs:
           go build -v ./...
       - name: Test with the Go CLI
         run: |
+          cd glee-go
           go mod tidy
           go build -o build/l2 -ldflags "-X main.version=`git tag --sort=-version:refname | head -n 1`" glee-go/glee.go
