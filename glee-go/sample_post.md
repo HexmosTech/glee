@@ -1,8 +1,6 @@
 ---
-title:
-   default: new default title
-   hn: title from glee to HN
-   reddit: title from glee to reddit
+title: New post updated
+
 
 authors:
 - sample@gmail.com
@@ -11,7 +9,7 @@ featured: false
 status: draft
 custom_excerpt: This is a custom excerpt
 feature_image: ./test_images/Animhorse.gif
-slug: testing-glee
+slug: testing-glee-go
 
 ---
 
