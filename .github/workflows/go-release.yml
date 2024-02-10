@@ -1,9 +1,6 @@
-name: glee release
-
+name: Lama2 Release
 on:
   push:
-    branches:
-      - glee-in-go
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
@@ -21,27 +18,16 @@ jobs:
           - goarch: arm64
             goos: windows
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-      with:
-        submodules: recursive  # Include submodules if your repository has any
-
-    - name: Change to glee-go directory
-      run: cd glee-go
-      shell: bash
-
-    - name: Install dependencies
-      run: |
-        ls -l
-        go mod tidy
-
-    - name: Build and Release
-      uses: wangyoucao577/go-release-action@v1.32
+    - uses: actions/checkout@v3
+    - name: Set working directory
+      run: mkdir -p glee-go && cd glee-go
+    - uses: wangyoucao577/go-release-action@v1.32
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
         goversion: "https://dl.google.com/go/go1.19.3.linux-amd64.tar.gz"
         binary_name: "l2"
-        extra_files: ../LICENSE ../README.md  # Adjust the paths accordingly
-        ldflags: -X main.version=${{ github.ref_name }}
+        extra_files: LICENSE README.md
+        ldflags: -X main.version=${{  github.ref_name }}
+      working-directory: ./glee-go
