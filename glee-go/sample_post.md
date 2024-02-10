@@ -9,7 +9,7 @@ featured: false
 status: draft
 custom_excerpt: This is a custom excerpt
 feature_image: ./test_images/Animhorse.gif
-slug: testing-glee-go
+slug: testing-glee-go-dd
 
 ---
 
