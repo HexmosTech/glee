@@ -10,6 +10,7 @@ authors:
 tags: ["draft"]
 featured: false
 status: draft
+
 custom_excerpt: This is a custom excerpt
 feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: false
