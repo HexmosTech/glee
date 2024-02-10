@@ -15,8 +15,8 @@ jobs:
           go-version: '1.19.x'
       - name: Install dependencies
         run: |
-        cd glee-go
-        go mod tidy
+          cd glee-go
+          go mod tidy
       - name: Build
         run: go build -v ./...
       - name: Test with the Go CLI
