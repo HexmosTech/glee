@@ -89,10 +89,12 @@ func getPostId(slug string, headers http.Header) (*Post, error) {
 }
 
 func toHTML(markdown string) string {
+	fmt.Println("Converting markdown to HTML...", markdown)
 	start := "<!--kg-card-begin: html-->"
 	end := "<!--kg-card-end: html-->"
 
 	md := goldmark.New(
+		
 		goldmark.WithExtensions(
 			extension.GFM, // Includes table, fenced code, and code highlight extensions
 			extension.Table,
@@ -101,14 +103,15 @@ func toHTML(markdown string) string {
 			parser.WithAutoHeadingID(), // Enable automatic heading IDs for TOC
 		),
 		goldmark.WithRendererOptions(
-			html.WithHardWraps(), // Enable hard wrapping for better formatting
+			html.WithHardWraps(),
+			html.WithUnsafe(), // This also enables unsafe rendering
 		),
 	)
 	var buf bytes.Buffer
 	if err := md.Convert([]byte(markdown), &buf); err != nil {
 		panic(err)
 	}
-	// fmt.Printf("HTML: %s\n", buf.String())
+	fmt.Printf("HTML: %s\n", buf.String())
 	return start + buf.String() + end // Return the generated HTML string
 }
 
@@ -328,21 +331,6 @@ func getJWToken() (string, error) {
 
 	return signedToken, nil
 }
-
-// func newMarkdown() goldmark.Markdown {
-// 	return goldmark.New(
-// 		goldmark.WithExtensions(
-// 			extension.GFM, // Includes table, fenced code, and code highlight extensions
-// 			extension.Table,
-// 		),
-// 		goldmark.WithParserOptions(
-// 			parser.WithAutoHeadingID(), // Enable automatic heading IDs for TOC
-// 		),
-// 		goldmark.WithRendererOptions(
-// 			html.WithHardWraps(), // Enable hard wrapping for better formatting
-// 		),
-// 	)
-// }
 
 func main() {
 	// newMarkdown()
