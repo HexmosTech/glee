@@ -15,7 +15,7 @@ custom_excerpt: This is a custom excerpt
 feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: false
 # code_hilite_theme: vim
-slug: testing-glee
+slug: testing-glee-1
 
 ---
 
@@ -101,6 +101,23 @@ def hello_world():
     print("Hello, world!")
 ```
 
+```golang
+func getTOMLFile(configPath string) {
+	fmt.Printf("The configuration file at %s was not found.\n", configPath)
+
+	var configResponse string
+	fmt.Print("Would you like me to create the configuration file? (yes/no): ")
+	fmt.Scanln(&configResponse)
+
+	if configResponse == "yes" || configResponse == "y" {
+		// Your existing code to create the configuration file
+		// ...
+
+	} else {
+		os.Exit(0)
+	}
+}
+```
 
 ## Table 
 

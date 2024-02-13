@@ -167,6 +167,7 @@ def get_temp_dir():
         return "/tmp/"
 
 
+
 def image_to_hash(image):
     tp = ""
     if image.startswith("http://") or image.startswith("https://"):
