@@ -57,23 +57,23 @@ var postsApiBase string
 var buf bytes.Buffer
 var md = goldmark.New(
 
-		goldmark.WithExtensions(
-			extension.GFM, // Includes table, fenced code, and code highlight extensions
-			extension.Table,
-			img.NewImg("image", nil),
-			highlighting.NewHighlighting(
-				highlighting.WithStyle("monokai"),
-				
-			),
+	goldmark.WithExtensions(
+		extension.GFM, // Includes table, fenced code, and code highlight extensions
+		extension.Table,
+		img.NewImg("image", nil),
+		highlighting.NewHighlighting(
+			highlighting.WithStyle("monokai"), //theme list https://github.com/yuin/goldmark-highlighting/issues/37
+
 		),
-		goldmark.WithParserOptions(
-			parser.WithAutoHeadingID(), // Enable automatic heading IDs for TOC
-		),
-		goldmark.WithRendererOptions(
-			goldmarkHTML.WithHardWraps(),
-			goldmarkHTML.WithUnsafe(), // This also enables unsafe rendering
-		),
-	)
+	),
+	goldmark.WithParserOptions(
+		parser.WithAutoHeadingID(), // Enable automatic heading IDs for TOC
+	),
+	goldmark.WithRendererOptions(
+		goldmarkHTML.WithHardWraps(),
+		goldmarkHTML.WithUnsafe(), // This also enables unsafe rendering
+	),
+)
 
 func getPostId(slug string, headers http.Header) (*Post, error) {
 	ghostVersion := config.GetDefault("ghost-configuration.GHOST_VERSION", "").(string)
@@ -171,77 +171,6 @@ func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
    float: none !important;
    }`
 
-	theme := ` .codehilite .hll { background-color: #49483e }
-   .codehilite  { background: #303030; color: #f8f8f2 }
-   .codehilite .c { color: #75715e } /* Comment */
-   .codehilite .err { color: #960050; background-color: #1e0010 } /* Error */
-   .codehilite .k { color: #66d9ef } /* Keyword */
-   .codehilite .l { color: #ae81ff } /* Literal */
-   .codehilite .n { color: #f8f8f2 } /* Name */
-   .codehilite .o { color: #f92672 } /* Operator */
-   .codehilite .p { color: #f8f8f2 } /* Punctuation */
-   .codehilite .ch { color: #75715e } /* Comment.Hashbang */
-   .codehilite .cm { color: #75715e } /* Comment.Multiline */
-   .codehilite .cp { color: #75715e } /* Comment.Preproc */
-   .codehilite .cpf { color: #75715e } /* Comment.PreprocFile */
-   .codehilite .c1 { color: #75715e } /* Comment.Single */
-   .codehilite .cs { color: #75715e } /* Comment.Special */
-   .codehilite .gd { color: #f92672 } /* Generic.Deleted */
-   .codehilite .ge { font-style: italic } /* Generic.Emph */
-   .codehilite .gi { color: #a6e22e } /* Generic.Inserted */
-   .codehilite .gs { font-weight: bold } /* Generic.Strong */
-   .codehilite .gu { color: #75715e } /* Generic.Subheading */
-   .codehilite .kc { color: #66d9ef } /* Keyword.Constant */
-   .codehilite .kd { color: #66d9ef } /* Keyword.Declaration */
-   .codehilite .kn { color: #f92672 } /* Keyword.Namespace */
-   .codehilite .kp { color: #66d9ef } /* Keyword.Pseudo */
-   .codehilite .kr { color: #66d9ef } /* Keyword.Reserved */
-   .codehilite .kt { color: #66d9ef } /* Keyword.Type */
-   .codehilite .ld { color: #e6db74 } /* Literal.Date */
-   .codehilite .m { color: #ae81ff } /* Literal.Number */
-   .codehilite .s { color: #e6db74 } /* Literal.String */
-   .codehilite .na { color: #a6e22e } /* Name.Attribute */
-   .codehilite .nb { color: #f8f8f2 } /* Name.Builtin */
-   .codehilite .nc { color: #a6e22e } /* Name.Class */
-   .codehilite .no { color: #66d9ef } /* Name.Constant */
-   .codehilite .nd { color: #a6e22e } /* Name.Decorator */
-   .codehilite .ni { color: #f8f8f2 } /* Name.Entity */
-   .codehilite .ne { color: #a6e22e } /* Name.Exception */
-   .codehilite .nf { color: #a6e22e } /* Name.Function */
-   .codehilite .nl { color: #f8f8f2 } /* Name.Label */
-   .codehilite .nn { color: #f8f8f2 } /* Name.Namespace */
-   .codehilite .nx { color: #a6e22e } /* Name.Other */
-   .codehilite .py { color: #f8f8f2 } /* Name.Property */
-   .codehilite .nt { color: #f92672 } /* Name.Tag */
-   .codehilite .nv { color: #f8f8f2 } /* Name.Variable */
-   .codehilite .ow { color: #f92672 } /* Operator.Word */
-   .codehilite .w { color: #f8f8f2 } /* Text.Whitespace */
-   .codehilite .mb { color: #ae81ff } /* Literal.Number.Bin */
-   .codehilite .mf { color: #ae81ff } /* Literal.Number.Float */
-   .codehilite .mh { color: #ae81ff } /* Literal.Number.Hex */
-   .codehilite .mi { color: #ae81ff } /* Literal.Number.Integer */
-   .codehilite .mo { color: #ae81ff } /* Literal.Number.Oct */
-   .codehilite .sa { color: #e6db74 } /* Literal.String.Affix */
-   .codehilite .sb { color: #e6db74 } /* Literal.String.Backtick */
-   .codehilite .sc { color: #e6db74 } /* Literal.String.Char */
-   .codehilite .dl { color: #e6db74 } /* Literal.String.Delimiter */
-   .codehilite .sd { color: #e6db74 } /* Literal.String.Doc */
-   .codehilite .s2 { color: #e6db74 } /* Literal.String.Double */
-   .codehilite .se { color: #ae81ff } /* Literal.String.Escape */
-   .codehilite .sh { color: #e6db74 } /* Literal.String.Heredoc */
-   .codehilite .si { color: #e6db74 } /* Literal.String.Interpol */
-   .codehilite .sx { color: #e6db74 } /* Literal.String.Other */
-   .codehilite .sr { color: #e6db74 } /* Literal.String.Regex */
-   .codehilite .s1 { color: #e6db74 } /* Literal.String.Single */
-   .codehilite .ss { color: #e6db74 } /* Literal.String.Symbol */
-   .codehilite .bp { color: #f8f8f2 } /* Name.Builtin.Pseudo */
-   .codehilite .fm { color: #a6e22e } /* Name.Function.Magic */
-   .codehilite .vc { color: #f8f8f2 } /* Name.Variable.Class */
-   .codehilite .vg { color: #f8f8f2 } /* Name.Variable.Global */
-   .codehilite .vi { color: #f8f8f2 } /* Name.Variable.Instance */
-   .codehilite .vm { color: #f8f8f2 } /* Name.Variable.Magic */
-   .codehilite .il { color: #ae81ff } /* Literal.Number.Integer.Long */`
-
 	sidebarTocHead := `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.12.3/tocbot.css">
 <style>
    .gh-content {
@@ -328,11 +257,11 @@ func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
 </script>`
 
 	// Append the default styles to the head
-		// Ensure meta["codeinjection_head"] is a string before appending
+	// Ensure meta["codeinjection_head"] is a string before appending
 	if existingHead, ok := meta["codeinjection_head"].(string); ok {
-		meta["codeinjection_head"] = existingHead +"</style>"+ defaultStyle + theme+"</style>"
+		meta["codeinjection_head"] = existingHead + "</style>" + defaultStyle + "</style>"
 	} else {
-		meta["codeinjection_head"] ="<style> "+defaultStyle + theme+"</style>"
+		meta["codeinjection_head"] = "<style> " + defaultStyle + "</style>"
 	}
 
 	// Conditionally append sidebar TOC head and footer
@@ -449,11 +378,48 @@ func makeRequest(headers http.Header, body map[string]interface{}, pid string, u
 	fmt.Printf("Blog preview link: %s\n", responseData["posts"].([]interface{})[0].(map[string]interface{})["url"])
 }
 
+
+
+func injectMultiTitles(meta map[string]interface{}) error {
+	meta["codeinjection_head"] = ""
+
+	_, ok := meta["title"].(string)
+	if !ok {
+		titleDataMap, ok := meta["title"].(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("missing default title")
+		}
+
+		defaultTitle, ok := titleDataMap["default"].(string)
+		if !ok {
+			return fmt.Errorf("missing 'default' key in title_data")
+		}
+
+		meta["title"] = defaultTitle
+
+		titleDataBytes, err := json.Marshal(titleDataMap)
+		if err != nil {
+			log.Printf("error marshaling title data: %v", err)
+			return err
+		}
+
+		titleDataStr := string(titleDataBytes)
+
+		meta["codeinjection_head"] = fmt.Sprintf(`<script>
+			changetitle(%s);
+			</script>`, titleDataStr)
+	}
+
+	return nil
+}
+
+
 func postToGhost(metadata map[string]interface{}, content string) {
 	// Add configurations to metadata
-	metadata=addBlogConfigurations(metadata)
+	metadata = addBlogConfigurations(metadata)
 	metadata["html"] = toHTML(content)
 	token, err := getJWToken()
+	injectMultiTitles(metadata)
 	if err != nil {
 		log.Fatalf("Failed generate jwt token: %v", err)
 	}
@@ -477,14 +443,11 @@ func postToGhost(metadata map[string]interface{}, content string) {
 	} else {
 		metadata["feature_image"] = ""
 	}
-	
 
 	uploadedImages, err := uploadImages(token, htmlData)
 	result, err := replaceImageLinks(metadata, uploadedImages)
 	metadata["html"] = result
-	
-	
-	
+
 	// fmt.Println("Uploaded images:", uploadedImages)
 	postObj := metadata
 	body := map[string]interface{}{
@@ -556,7 +519,7 @@ func uploadImages(token, htmlData string) (map[string]string, error) {
 	// Extract the src attribute from each match
 	var mdlibImages []string
 	for _, m := range matches {
-		if len(m) >   1 {
+		if len(m) > 1 {
 			mdlibImages = append(mdlibImages, m[1])
 		}
 	}
@@ -593,7 +556,6 @@ func uploadImages(token, htmlData string) (map[string]string, error) {
 
 	return uploadedImages, nil
 }
-
 
 func uploadToGhost(token, imageData, hashValue string, blogImageList []string) (string, error) {
 	// Implementation goes here
@@ -672,11 +634,11 @@ func imageToHash(image string) (string, string, error) {
 	var hashValue string
 
 	if strings.HasPrefix(image, "http://") || strings.HasPrefix(image, "https://") {
-		
+
 		iext := filepath.Ext(image)
 		// fmt.Println("iext", iext)
 		tempDir := getTempDir()
-		
+
 		tp = filepath.Join(tempDir, "img"+iext)
 		resp, err := http.Get(image)
 		if err != nil {
@@ -698,11 +660,10 @@ func imageToHash(image string) (string, string, error) {
 		hashValue, err = sha256Sum(tp)
 	} else {
 		// fmt.Println("Downloading image:", image)
-		hashValue,err =sha256Sum(image)
+		hashValue, err = sha256Sum(image)
 		fileExtension = filepath.Ext(image)
 	}
 
-	
 	if err != nil {
 		return "", "", err
 	}
@@ -899,14 +860,14 @@ func main() {
 	contentStr := string(content)
 
 	// Find the index of the second delimiter to isolate the YAML front matter
-	index := strings.Index(contentStr, "\n\n---\n\n")
+	index := strings.Index(contentStr, "\n---\n")
 	if index == -1 {
 		log.Fatal("Could not find YAML front matter delimiter")
 	}
 
 	// Extract the YAML front matter and the rest of the content
 	yamlFrontMatter := contentStr[:index]
-	markdownContent := contentStr[index+len("\n\n---\n\n"):]
+	markdownContent := contentStr[index+len("\n---\n"):]
 
 	// Parse the YAML front matter into a Go struct or map
 	var metadata map[string]interface{}

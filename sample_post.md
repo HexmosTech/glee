@@ -1,10 +1,10 @@
 ---
-# title:
-#    default: new default title
-#    hn: title from glee to HN
-#    reddit: title from glee to reddit
+title:
+   default: new default title
+   hn: title from glee to HN
+   reddit: title from glee to reddit
 
-title: hello
+# title: hello
 authors:
 - sample@gmail.com
 tags: ["draft"]
@@ -16,10 +16,9 @@ feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: false
 # code_hilite_theme: vim
 slug: testing-glee-1
-
 ---
 
-<!-- [TOC] -->
+[TOC]
 
 # My Simple Markdown File
 
