@@ -70,7 +70,7 @@ sudo rm -f /usr/local/bin/glee /usr/bin/glee
 sudo mv /tmp/glee /usr/local/bin
 
 
-if glee > /dev/null 2>&1; then 
+if command -v glee > /dev/null 2>&1; then 
     echo -e $"${GREEN}Successfully installed glee; Type 'glee <markdown_file>' to invoke glee${NC}"
 else 
     echo -e $"${RED}Failure in installation; please report issue at github.com/HexmosTech/glee${NC}"

@@ -6,12 +6,14 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"mime"
 	"net/http"
 	"os"
+	"os/user"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -55,16 +57,17 @@ type ResponseData struct {
 var postsApiBase string
 
 var buf bytes.Buffer
+var theme string
 var md = goldmark.New(
 
 	goldmark.WithExtensions(
 		extension.GFM, // Includes table, fenced code, and code highlight extensions
 		extension.Table,
 		img.NewImg("image", nil),
-		highlighting.NewHighlighting(
-			highlighting.WithStyle("monokai"), //theme list https://github.com/yuin/goldmark-highlighting/issues/37
+		// highlighting.NewHighlighting(
+		// 	highlighting.WithStyle(theme), //theme list https://github.com/yuin/goldmark-highlighting/issues/37
 
-		),
+		// ),
 	),
 	goldmark.WithParserOptions(
 		parser.WithAutoHeadingID(), // Enable automatic heading IDs for TOC
@@ -259,7 +262,7 @@ func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
 	// Append the default styles to the head
 	// Ensure meta["codeinjection_head"] is a string before appending
 	if existingHead, ok := meta["codeinjection_head"].(string); ok {
-		meta["codeinjection_head"] = existingHead + "</style>" + defaultStyle + "</style>"
+		meta["codeinjection_head"] = existingHead + "<style>" + defaultStyle + "</style>"
 	} else {
 		meta["codeinjection_head"] = "<style> " + defaultStyle + "</style>"
 	}
@@ -414,12 +417,44 @@ func injectMultiTitles(meta map[string]interface{}) error {
 }
 
 
+
 func postToGhost(metadata map[string]interface{}, content string) {
 	// Add configurations to metadata
+	injectMultiTitles(metadata)
+	if val, ok := metadata["code_hilite_theme"]; ok {
+		theme = val.(string)
+	} else {
+		codeTheme := config.GetDefault("blog-configuration.CODE_HILITE_THEME", "").(string)
+		if codeTheme != "" {
+			theme = codeTheme
+		} else {
+			theme = "monokai" // Default theme if none is specified
+		}
+	}
+	md = goldmark.New(
+		goldmark.WithExtensions(
+			extension.GFM,
+			extension.Table,
+			img.NewImg("image", nil),
+			highlighting.NewHighlighting(
+				highlighting.WithStyle(theme),
+			),
+		),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+		goldmark.WithRendererOptions(
+			goldmarkHTML.WithHardWraps(),
+			goldmarkHTML.WithUnsafe(),
+		),
+	)
+	
+	
+
 	metadata = addBlogConfigurations(metadata)
 	metadata["html"] = toHTML(content)
 	token, err := getJWToken()
-	injectMultiTitles(metadata)
+	
 	if err != nil {
 		log.Fatalf("Failed generate jwt token: %v", err)
 	}
@@ -842,6 +877,14 @@ func getJWToken() (string, error) {
 func main() {
 	// newMarkdown()
 	initLogging(true)
+	showConfig := flag.Bool("config", false, "Show glee configuration file")
+	flag.Parse()
+
+	// Check if the --config flag was set
+	if *showConfig {
+		printConfiguration()
+		return
+	}
 	viewTOMLFile()
 	if len(os.Args) != 2 {
 		fmt.Println("Usage: go run glee.go <markdown_file>")
@@ -878,4 +921,21 @@ func main() {
 
 	// Call the postToGhost function with metadata and content
 	postToGhost(metadata, markdownContent)
+}
+
+func printConfiguration() {
+	usr, err := user.Current()
+	if err != nil {
+		log.Fatalf("Failed to get current user: %v", err)
+	}
+
+	configPath := filepath.Join(usr.HomeDir, ".glee.toml")
+	content, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		log.Fatalf("Failed to read configuration file: %v", err)
+	}
+
+	fmt.Printf("Configuration path: %s\n", configPath)
+	fmt.Println("-------------------")
+	fmt.Println(string(content))
 }

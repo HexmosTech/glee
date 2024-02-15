@@ -14,11 +14,11 @@ status: draft
 custom_excerpt: This is a custom excerpt
 feature_image: ./test_images/Animhorse.gif
 # sidebar_toc: false
-# code_hilite_theme: vim
+# code_hilite_theme: solarized-dark
 slug: testing-glee-1
 ---
 
-[TOC]
+<!-- [TOC] -->
 
 # My Simple Markdown File
 
