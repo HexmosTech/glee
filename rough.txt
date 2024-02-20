@@ -1,0 +1,77 @@
+// func uploadToGhost(token, imageData, hashName string, blogImageList []string) (string, error)   {
+// 	GHOST_VERSION := config.Get("ghost-configuration.GHOST_VERSION").(string)
+// 	GHOST_URL := config.Get("ghost-configuration.GHOST_URL").(string)
+
+// 	var POSTS_API_BASE string
+// 	if GHOST_VERSION == "v5" {
+// 		POSTS_API_BASE = GHOST_URL + "/api/admin/images/upload/"
+// 	} else {
+// 		POSTS_API_BASE = GHOST_URL + "/api/" + GHOST_VERSION + "/admin/images/upload/"
+// 	}
+
+// 	headers := map[string]string{"Authorization": "Ghost " + token}
+
+// 	for _, name := range blogImageList {
+// 		imageName := strings.Split(name, "/")[len(strings.Split(name, "/"))-1]
+// 		hashValue := strings.Split(hashName, ".")[0]
+// 		if strings.Contains(imageName, hashValue) {
+			
+// 			return name, nil
+// 		}
+// 	}
+
+// 	file, err := os.Open(imageData)
+// if err != nil {
+//     return "", errors.New("Failed to open image file: " + err.Error())
+// }
+// defer file.Close()
+
+// body := &bytes.Buffer{}
+// writer := multipart.NewWriter(body)
+
+// part, err := writer.CreateFormFile("file", hashName)
+// if err != nil {
+//     return "", errors.New("Failed to create form file part: " + err.Error())
+// }
+// _, err = io.Copy(part, file)
+// if err != nil {
+//     return "", errors.New("Failed to copy image data to form part: " + err.Error())
+// }
+
+// err = writer.WriteField("ref", hashName)
+// if err != nil {
+//     return "", errors.New("Failed to write ref field: " + err.Error())
+// }
+
+// err = writer.Close()
+// if err != nil {
+//     return "", errors.New("Failed to close multipart writer: " + err.Error())
+// }
+
+// req, err := http.NewRequest("POST", POSTS_API_BASE, body)
+// if err != nil {
+//     return "", errors.New("Failed to create HTTP request: " + err.Error())
+// }
+// req.Header.Set("Authorization", headers["Authorization"])
+// req.Header.Set("Content-Type", "multipart/form-data; boundary="+writer.Boundary())
+
+// resp, err := http.DefaultClient.Do(req)
+// if err != nil {
+//     return "", errors.New("Failed to send HTTP request: " + err.Error())
+// }
+// defer resp.Body.Close()
+
+// fmt.Println("Response:", resp.StatusCode)
+// if resp.StatusCode != http.StatusOK {
+//     return "", errors.New("Failed to upload image: HTTP status " + resp.Status)
+// }
+
+// var result map[string]interface{}
+// err = json.NewDecoder(resp.Body).Decode(&result)
+// if err != nil {
+//     return "", errors.New("Failed to decode JSON response: " + err.Error())
+// }
+
+// imageLink := result["images"].([]interface{})[0].(map[string]interface{})["url"].(string)
+// return imageLink, nil
+// }

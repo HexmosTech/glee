@@ -12,7 +12,7 @@ featured: false
 status: draft
 
 custom_excerpt: This is a custom excerpt
-feature_image: ./test_images/Animhorse.gif
+feature_image: ./test_images/smiley.png
 # sidebar_toc: false
 # code_hilite_theme: solarized-dark
 slug: testing-glee-1
@@ -24,7 +24,7 @@ slug: testing-glee-1
 
  
 
-This is  basic Markdown file with some common formatting elements.
+This is basic Markdown file with some common formatting elements.
 
 ## Headers
 
@@ -88,7 +88,7 @@ You can embed images like this:
 ![ico](./test_images/icon.ico)
 
 ### heic
-![heic](./test_images/apple.heic)
+<!-- ![heic](./test_images/apple.heic) -->
 ## Code
 
 You can include inline code using backticks (`) like `code`.

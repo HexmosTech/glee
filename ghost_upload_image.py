@@ -28,14 +28,17 @@ def upload_to_ghost(token, image, hash_name, blog_image_list, logging):
             if hash_value in image_name:
                 logging.debug(f"The image {name} already exists and is being reused.")
                 return name
-
+        print("image",image)
+        print("hash_name",hash_name)    
         mulit_encoder = MultipartEncoder(
             fields={
                 "file": (hash_name, open(image, "rb"), "image/png"),
                 "ref": hash_name,
             }
         )
+        # print(mulit_encoder, "mulit_encoder")
         boundary_value = mulit_encoder.boundary_value
+        # print(boundary_value, "boundary_value")
         response = {}
         response = requests.post(
             POSTS_API_BASE,

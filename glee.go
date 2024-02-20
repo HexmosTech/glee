@@ -6,12 +6,14 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"flag"
+
 	"fmt"
 	"io"
 	"io/ioutil"
 	"mime"
+	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -26,6 +28,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/ghodss/yaml"
+	"github.com/jessevdk/go-flags"
 	"github.com/pelletier/go-toml"
 
 	// "github.com/russross/blackfriday/v2"
@@ -52,6 +55,13 @@ type Post struct {
 
 type ResponseData struct {
 	Posts []Post `json:"posts"`
+}
+
+var opts struct {
+	ShowConfig bool `short:"c" long:"config" description:"Show glee configuration global file"`
+	Debug      bool   `short:"d" long:"debug" description:"debug mode"`
+	File       string `description:"Markdown file to process"`
+	Help 	  	bool 	`short:"h" long:"help" description:"Show this help message"`
 }
 
 var postsApiBase string
@@ -110,7 +120,7 @@ func getPostId(slug string, headers http.Header) (*Post, error) {
 		if resp.StatusCode == http.StatusNotFound {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("Unable to communicate with the Ghost Admin API: %s", body)
+		return nil, fmt.Errorf("unable to communicate with the Ghost Admin API: %s", body)
 	}
 
 	var data ResponseData
@@ -123,7 +133,7 @@ func getPostId(slug string, headers http.Header) (*Post, error) {
 		return &data.Posts[0], nil
 	}
 
-	return nil, errors.New("No posts found for the given slug")
+	return nil, errors.New("no posts found for the given slug")
 }
 
 func toHTML(markdown string) string {
@@ -154,14 +164,13 @@ func initLogging(debug bool) {
 }
 
 func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
-	// Check if config is nil
 	if config == nil {
-		log.Fatal("Configuration is not initialized. Call viewTOMLFile to initialize it.")
+		log.Fatal("Configuration is not initialized. Call loadGlobalConfig to initialize it.")
 	}
 
 	globalSidebarTOC := config.GetDefault("blog-configuration.SIDEBAR_TOC", "").(bool)
-	globalFeatured := config.GetDefault("blog-configuration.FEATURED", "").(bool)
-	globalStatus := config.GetDefault("blog-configuration.STATUS", "").(string)
+	// globalFeatured := config.GetDefault("blog-configuration.FEATURED", "").(bool)
+	// globalStatus := config.GetDefault("blog-configuration.STATUS", "").(string)
 
 	defaultStyle := `pre { line-height: 125%; }
    td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -259,33 +268,26 @@ func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
    }
 </script>`
 
-	// Append the default styles to the head
-	// Ensure meta["codeinjection_head"] is a string before appending
 	if existingHead, ok := meta["codeinjection_head"].(string); ok {
 		meta["codeinjection_head"] = existingHead + "<style>" + defaultStyle + "</style>"
 	} else {
 		meta["codeinjection_head"] = "<style> " + defaultStyle + "</style>"
 	}
-
-	// Conditionally append sidebar TOC head and footer
+	
 	if globalSidebarTOC {
 		if existingHead, ok := meta["codeinjection_head"].(string); ok {
 			meta["codeinjection_head"] = existingHead + sidebarTocHead
+			log.Debug("Done Sidebar TOC Code injection")
 		} else {
 			meta["codeinjection_head"] = sidebarTocHead
 		}
 		meta["codeinjection_foot"] = sidebarTocFooter
 	}
 
-	// Assuming meta is a map[string]interface{}, add or update relevant fields
-	fmt.Printf("SIDEBAR_TOC: %v\n", globalSidebarTOC)
-	fmt.Printf("FEATURED: %v\n", globalFeatured)
-	fmt.Printf("STATUS: %v\n", globalStatus)
-
 	return meta
 }
 
-func viewTOMLFile() {
+func loadGlobalConfig() {
 	configPath := filepath.Join(os.Getenv("HOME"), ".glee.toml")
 	var err error
 	config, err = toml.LoadFile(configPath)
@@ -296,10 +298,10 @@ func viewTOMLFile() {
 }
 
 func getTOMLFile(configPath string) {
-	fmt.Printf("The configuration file at %s was not found.\n", configPath)
+	log.Error("The configuration file at %s was not found.\n", configPath)
 
 	var configResponse string
-	fmt.Print("Would you like me to create the configuration file? (yes/no): ")
+	log.Info("Would you like me to create the configuration file? (yes/no): ")
 	fmt.Scanln(&configResponse)
 
 	if configResponse == "yes" || configResponse == "y" {
@@ -322,7 +324,6 @@ func makeRequest(headers http.Header, body map[string]interface{}, pid string, u
 		postsApiBase = ghostUrl + "/api/" + ghostVersion + "/admin/posts/"
 	}
 	if pid == "" {
-		// fmt.Printf("%#v\n", body)
 		method = http.MethodPost
 		apiEndpoint = postsApiBase + "?source=html"
 	} else {
@@ -334,13 +335,13 @@ func makeRequest(headers http.Header, body map[string]interface{}, pid string, u
 	client := &http.Client{}
 	bodyJson, err := json.Marshal(body)
 	if err != nil {
-		fmt.Println("Error marshaling body to JSON:", err)
+		log.Error("Error marshaling body to JSON:", err)
 		return
 	}
 
 	req, err := http.NewRequest(method, apiEndpoint, bytes.NewBuffer(bodyJson))
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		log.Error("Error creating request:", err)
 		return
 	}
 	req.Header = headers
@@ -348,19 +349,18 @@ func makeRequest(headers http.Header, body map[string]interface{}, pid string, u
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error executing request:", err)
+		log.Error("Error executing request:", err)
 		return
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		var errorMessage string
-		errorBytes, _ := ioutil.ReadAll(resp.Body) // Read the response body
-		if err := json.Unmarshal(errorBytes, &errorMessage); err != nil {
-			// If the error message is not JSON, just use the raw response body
+		errorBytes, _ := ioutil.ReadAll(resp.Body) 
+		if err := json.Unmarshal(errorBytes, &errorMessage); err != nil {	
 			errorMessage = string(errorBytes)
 		}
-		fmt.Printf("Request failed with status: %s. Error message: %s\n", resp.Status, errorMessage)
+		log.Error("Request failed with status: %s. Error message: %s\n", resp.Status, errorMessage)
 		return
 	}
 
@@ -368,20 +368,18 @@ func makeRequest(headers http.Header, body map[string]interface{}, pid string, u
 	var responseData map[string]interface{}
 	err = json.NewDecoder(resp.Body).Decode(&responseData)
 	if err != nil {
-		fmt.Println("Error unmarshaling response:", err)
+		log.Error("Error unmarshaling response:", err)
 		return
 	}
 
 	// Log the result
 	if pid == "" {
-		fmt.Println("Created new post")
+		log.Info("Created new post")
 	} else {
-		fmt.Println("Updated existing post based on slug")
+		log.Info("Updated existing post based on slug")
 	}
 	fmt.Printf("Blog preview link: %s\n", responseData["posts"].([]interface{})[0].(map[string]interface{})["url"])
 }
-
-
 
 func injectMultiTitles(meta map[string]interface{}) error {
 	meta["codeinjection_head"] = ""
@@ -390,23 +388,26 @@ func injectMultiTitles(meta map[string]interface{}) error {
 	if !ok {
 		titleDataMap, ok := meta["title"].(map[string]interface{})
 		if !ok {
-			return fmt.Errorf("missing default title")
+			log.Error("missing default title")
+			return nil
 		}
 
 		defaultTitle, ok := titleDataMap["default"].(string)
 		if !ok {
-			return fmt.Errorf("missing 'default' key in title_data")
+			log.Error("missing default title in multi-title")
+			return nil
 		}
 
 		meta["title"] = defaultTitle
 
 		titleDataBytes, err := json.Marshal(titleDataMap)
 		if err != nil {
-			log.Printf("error marshaling title data: %v", err)
+			log.Error("error marshaling title data: %v", err)
 			return err
 		}
 
 		titleDataStr := string(titleDataBytes)
+		log.Debug("multi title: ", titleDataStr)
 
 		meta["codeinjection_head"] = fmt.Sprintf(`<script>
 			changetitle(%s);
@@ -416,13 +417,11 @@ func injectMultiTitles(meta map[string]interface{}) error {
 	return nil
 }
 
-
-
 func postToGhost(metadata map[string]interface{}, content string) {
-	// Add configurations to metadata
 	injectMultiTitles(metadata)
 	if val, ok := metadata["code_hilite_theme"]; ok {
 		theme = val.(string)
+		log.Debug("Theme from markdown:", theme)
 	} else {
 		codeTheme := config.GetDefault("blog-configuration.CODE_HILITE_THEME", "").(string)
 		if codeTheme != "" {
@@ -430,6 +429,7 @@ func postToGhost(metadata map[string]interface{}, content string) {
 		} else {
 			theme = "monokai" // Default theme if none is specified
 		}
+		log.Debug("Default/Global Configured theme:", theme)
 	}
 	md = goldmark.New(
 		goldmark.WithExtensions(
@@ -448,42 +448,47 @@ func postToGhost(metadata map[string]interface{}, content string) {
 			goldmarkHTML.WithUnsafe(),
 		),
 	)
-	
-	
 
 	metadata = addBlogConfigurations(metadata)
 	metadata["html"] = toHTML(content)
 	token, err := getJWToken()
-	
 	if err != nil {
-		log.Fatalf("Failed generate jwt token: %v", err)
+		log.Error("Failed generate jwt token: %v", err)
+	} else{
+		log.Debug("Generated jwt token")
 	}
 	headers := http.Header{}
 	headers.Set("Authorization", "Ghost "+token)
 	post, err := getPostId(metadata["slug"].(string), headers)
 	if err != nil {
-		fmt.Printf("Error: Unable to communicate with the Ghost Admin API. Please verify your Ghost configurations: %v\n", err)
+		log.Error("Error: Unable to communicate with the Ghost Admin API. Please verify your Ghost configurations: %v\n", err)
 		return
 	}
-
-	// fmt.Printf("Post ID: %s\nUpdated At: %s\nHTML Data: %s\nFeature Image: %s\n",pid, updated_at, html_data, feature_image)
 	var pid, updated_at, htmlData, featureImage string
 	if post == nil {
-		fmt.Println("No post found for the given slug.")
+		log.Info("No post found for the given slug.")
 	} else {
 		pid, updated_at, htmlData, featureImage = post.ID, post.UpdatedAt, post.Mobiledoc, post.FeatureImage
 	}
 	if _, ok := metadata["feature_image"]; ok {
 		uploadFeatureImage(metadata, token, featureImage)
 	} else {
+		log.Fatal("Feature image not provided")
 		metadata["feature_image"] = ""
 	}
 
 	uploadedImages, err := uploadImages(token, htmlData)
+	if err != nil{
+		log.Error("Error uploading images:", err)
+	} else{
+		log.Info("Uploaded Blog Images")
+	}
 	result, err := replaceImageLinks(metadata, uploadedImages)
+	if err != nil {
+		log.Error("Error replacing image links:", err)
+	}
 	metadata["html"] = result
 
-	// fmt.Println("Uploaded images:", uploadedImages)
 	postObj := metadata
 	body := map[string]interface{}{
 		"posts": []map[string]interface{}{postObj},
@@ -493,19 +498,18 @@ func postToGhost(metadata map[string]interface{}, content string) {
 }
 
 func replaceImageLinks(metadata map[string]interface{}, imgMap map[string]string) (string, error) {
-	// Extract the HTML string from the metadata map
+	
 	htmlStr, ok := metadata["html"].(string)
 	if !ok {
 		return "", errors.New("metadata does not contain a string under the 'html' key")
 	}
 
-	// Parse the HTML string into a DOM tree
+	
 	doc, err := html.Parse(strings.NewReader(htmlStr))
 	if err != nil {
 		return "", err
 	}
 
-	// Traverse the DOM tree to replace img src attributes and a href attributes
 	var f func(*html.Node)
 	f = func(n *html.Node) {
 		if n.Type == html.ElementNode {
@@ -515,7 +519,6 @@ func replaceImageLinks(metadata map[string]interface{}, imgMap map[string]string
 					fallthrough
 				case n.Data == "a" && attr.Key == "href":
 					if newSrc, ok := imgMap[attr.Val]; ok {
-						// Replace the old src or href with the new one
 						n.Attr[i].Val = newSrc
 					}
 				}
@@ -527,7 +530,6 @@ func replaceImageLinks(metadata map[string]interface{}, imgMap map[string]string
 	}
 	f(doc)
 
-	// Render the modified DOM tree back into an HTML string
 	var buf bytes.Buffer
 	err = html.Render(&buf, doc)
 	if err != nil {
@@ -542,43 +544,48 @@ func uploadImages(token, htmlData string) (map[string]string, error) {
 	imageBackend := config.GetDefault("image-configuration.IMAGE_BACKEND", "").(string)
 	blogImageList := []string{}
 
-	// Regular expression to find img tags and extract src attributes
 	pattern := `<img[^>]+src="([^"]+)"[^>]*>`
-	// htmlData = `<html><body><img src="http://example.com/image1.jpg"></body></html>`
 	re := regexp.MustCompile(pattern)
 
-	// Use the regex to find all matches in the htmlData
 	matches := re.FindAllStringSubmatch(buf.String(), -1)
-	// fmt.Println("Matches:", matches)
 
-	// Extract the src attribute from each match
+	if imageBackend == "ghost" {
+		var err error
+		blogImageList, err = getImageFromPost(htmlData)
+		if err != nil {
+			log.Error("Error getting images from post:", err)
+			
+		}
+	}
 	var mdlibImages []string
 	for _, m := range matches {
 		if len(m) > 1 {
 			mdlibImages = append(mdlibImages, m[1])
 		}
 	}
-	// fmt.Println("mdlibImages:", mdlibImages)
+
 
 	for _, image := range mdlibImages {
 		hashValue, imageData, err := imageToHash(image) // Implement imageToHash function
 		if err != nil {
-			fmt.Println("Error calculating hash:", err)
+			log.Error("Error calculating hash:", err)
 			return nil, err
 		}
-		// fmt.Println("image", image)
+		
 		var imageLink string
 		if strings.HasPrefix(image, "http://") || strings.HasPrefix(image, "https://") {
 			if imageBackend == "s3" {
-				imageLink, err = uploadToS3(imageData, hashValue, log.StandardLogger())
+				imageLink, err = uploadToS3(imageData, hashValue)
 			} else if imageBackend == "ghost" {
 				imageLink, err = uploadToGhost(token, imageData, hashValue, blogImageList)
 			}
 		} else {
 			if imageBackend == "s3" {
-				imageLink, err = uploadToS3(image, hashValue, log.StandardLogger())
+				log.Debug("Uploading image to AWS S3")
+				imageLink, err = uploadToS3(image, hashValue)
 			} else if imageBackend == "ghost" {
 				imageLink, err = uploadToGhost(token, image, hashValue, blogImageList)
+				log.Debug("Uploading image to Ghost Database")
 			}
 		}
 
@@ -587,20 +594,109 @@ func uploadImages(token, htmlData string) (map[string]string, error) {
 		}
 
 		uploadedImages[image] = imageLink
-	}
 
+	}
 	return uploadedImages, nil
 }
 
-func uploadToGhost(token, imageData, hashValue string, blogImageList []string) (string, error) {
-	// Implementation goes here
-	return "", nil
+func uploadToGhost(token, imageData, hashName string, blogImageList []string) (string, error) {
+	ghostVersion := config.GetDefault("ghost-configuration.GHOST_VERSION", "").(string)
+	ghostUrl := config.GetDefault("ghost-configuration.GHOST_URL", "").(string)
+	var postsApiBase string
+	if ghostVersion == "v5" {
+		postsApiBase = ghostUrl + "/api/admin/images/upload/"
+	} else {
+		postsApiBase = ghostUrl + "/api/" + ghostVersion + "/admin/images/upload/"
+	}
+
+	
+
+	for _, name := range blogImageList {
+		hashValue := strings.Split(hashName, ".")[0]
+		filename := filepath.Base(name)
+		filenameWithoutExt := strings.TrimSuffix(filename, filepath.Ext(filename))
+		if hashValue == filenameWithoutExt {
+			log.Debug("The image already exists and is being reused: ", name)
+			return name, nil
+		}
+	}
+
+	// Open the file for reading
+	file, err := os.Open(imageData)
+	
+	if err != nil {
+		return "", errors.New("Failed to open image file: " + err.Error())
+	}
+	defer file.Close()
+	// Create a buffer to hold the multipart encoded form
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	contentType := mime.TypeByExtension(filepath.Ext(imageData))
+	
+	if contentType == "" {
+		contentType = "application/octet-stream" 
+	}
+
+	part, err := writer.CreatePart(textproto.MIMEHeader{
+		"Content-Disposition": []string{`form-data; name="file"; filename="` + hashName + `"`},
+		"Content-Type":        []string{contentType},
+	})
+
+	
+	if err != nil {
+		return "", errors.New("Failed to create form file part: " + err.Error())
+	}
+	_, err = io.Copy(part, file)
+	
+	if err != nil {
+		return "", errors.New("Failed to copy image data to form part: " + err.Error())
+	}
+
+	err = writer.WriteField("ref", hashName)
+	if err != nil {
+		return "", errors.New("Failed to write ref field: " + err.Error())
+	}
+
+	
+	err = writer.Close()
+
+	if err != nil {
+		return "", errors.New("Failed to close multipart writer: " + err.Error())
+	}
+
+	req, err := http.NewRequest("POST", postsApiBase, body)
+
+	if err != nil {
+		return "", errors.New("Failed to create HTTP request: " + err.Error())
+	}
+	req.Header.Set("Authorization", "Ghost "+token)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", errors.New("Failed to send HTTP request: " + err.Error())
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusCreated {
+		return "", errors.New("Failed to upload image: HTTP status " + resp.Status)
+	}
+
+	var result map[string]interface{}
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		return "", errors.New("Failed to decode JSON response: " + err.Error())
+	}
+
+	imageLink := result["images"].([]interface{})[0].(map[string]interface{})["url"].(string)
+
+	return imageLink, nil
 }
 
 func getImageFromPost(postJSON string) ([]string, error) {
 	var post map[string]interface{}
 	if err := json.Unmarshal([]byte(postJSON), &post); err != nil {
-		return nil, err
+		log.Error("Error during JSON unmarshaling:", err)
 	}
 	htmlContent := ""
 	if cards, ok := post["cards"].([]interface{}); ok {
@@ -615,7 +711,6 @@ func getImageFromPost(postJSON string) ([]string, error) {
 		}
 	}
 
-	// Parse the HTML and find all image tags
 	imageList := []string{}
 	z := html.NewTokenizer(strings.NewReader(htmlContent))
 	for {
@@ -643,19 +738,16 @@ func getImageFromPost(postJSON string) ([]string, error) {
 func sha256Sum(filename string) (string, error) {
 	h := sha256.New()
 
-	// Open the file
 	file, err := os.Open(filename)
 	if err != nil {
 		return "", err
 	}
 	defer file.Close()
 
-	// Copy the file's content to the hash
 	if _, err := io.Copy(h, file); err != nil {
 		return "", err
 	}
 
-	// Calculate the hash
 	hashInBytes := h.Sum(nil)
 	hash := hex.EncodeToString(hashInBytes)
 
@@ -717,7 +809,7 @@ func uploadFeatureImage(meta map[string]interface{}, token string, featureImage 
 	if featureImagePath, ok := meta["feature_image"].(string); ok {
 		hashValue, err := sha256Sum(featureImagePath)
 		if err != nil {
-			fmt.Println("Error calculating SHA-256 sum:", err)
+			log.Error("Error calculating SHA-256 sum:", err)
 			return
 		}
 
@@ -726,29 +818,31 @@ func uploadFeatureImage(meta map[string]interface{}, token string, featureImage 
 		imageBackend := config.GetDefault("image-configuration.IMAGE_BACKEND", "").(string)
 
 		if imageBackend == "s3" {
-			// Upload to S3
-			// You would need to implement the s3Upload function
-			// s3Upload(S3BucketName, featureImagePath, imageName)
-			// fmt.Println("Image uploaded to S3:", imageName)
-
-			meta["feature_image"], err = uploadToS3(featureImagePath, imageName, log.StandardLogger())
-			// fmt.Println("Feature image uploaded to S3", meta["feature_image"])
+			log.Debug("Uploading feature image to AWS S3")
+			meta["feature_image"], err = uploadToS3(featureImagePath, imageName)
 			if err != nil {
-				fmt.Println("Error uploading file to S3:", err)
+				log.Error("Error uploading file to S3:", err)
 			} else {
-				fmt.Println("File uploaded to S3 successfully.")
+				log.Info("File uploaded to S3 successfully.")
 			}
 		} else {
-			meta["feature_image"] = imageName
-			// Upload to Ghost's admin API
-			// uploadToGhost(GhostAdminAPI, token, featureImagePath, imageName)
+			log.Debug("Uploading feature image to Ghost Database")
+			var featureImgList []string
+			if featureImage != "" {
+				featureImgList = []string{featureImage}
+			} else {
+				featureImgList = []string{}
+			}
+			meta["feature_image"], err = uploadToGhost(token, featureImagePath, imageName, featureImgList)
+			if err != nil {
+				log.Error("Error uploading feature image to Ghost:", err)
+			}
+
 		}
 
-		// Update the feature_image in the metadata
-
-		fmt.Println("Uploaded feature image")
+		log.Info("Uploaded feature image")
 	} else {
-		fmt.Println("Feature image not provided")
+		log.Info("Feature image not provided")
 	}
 }
 
@@ -757,52 +851,49 @@ func getMimeType(filePath string) (string, error) {
 	return mime.TypeByExtension(ext), nil
 }
 
-func uploadToS3(localFilePath, s3FilePath string, logger *log.Logger) (string, error) {
+func uploadToS3(localFilePath, s3FilePath string) (string, error) {
 	accessKeyID := config.GetDefault("aws-s3-configuration.ACCESS_KEY_ID", "").(string)
 	secretAccessKey := config.GetDefault("aws-s3-configuration.SECRET_ACCESS_KEY", "").(string)
 	bucketName := config.GetDefault("aws-s3-configuration.BUCKET_NAME", "").(string)
 	s3BaseUrl := config.GetDefault("aws-s3-configuration.S3_BASE_URL", "").(string)
 	region := config.GetDefault("aws-s3-configuration.REGION", "").(string)
 
-	// Create a custom credentials provider
 	creds := credentials.NewStaticCredentials(accessKeyID, secretAccessKey, "")
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(region), Credentials: creds},
 	)
 	if err != nil {
-		logger.Println("Error creating session:", err)
+		log.Error("Error creating session:", err)
 		return "", err
 	}
 
-	// Get the S3 service client
+	
 	svc := s3.New(sess)
 
-	// Determine the MIME type of the file
+	
 	mimeType, err := getMimeType(localFilePath)
 	if err != nil {
-		logger.Println("Error determining MIME type:", err)
+		log.Error("Error determining MIME type:", err)
 		return "", err
 	}
 
-	// Read the local file
+	
 	file, err := os.Open(localFilePath)
 	if err != nil {
-		logger.Println("Error opening file:", err)
+		log.Error("Error opening file:", err)
 		return "", err
 	}
 	defer file.Close()
 
-	// Get the file size and read the file into a buffer
+	
 	stat, err := file.Stat()
 	if err != nil {
-		logger.Println("Error getting file stats:", err)
+		log.Error("Error getting file stats:", err)
 		return "", err
 	}
 	size := stat.Size()
 	buffer := make([]byte, size)
 	file.Read(buffer)
-
-	// Upload the file to S3
 
 	input := &s3.PutObjectInput{
 		Bucket:      aws.String(bucketName),
@@ -818,17 +909,16 @@ func uploadToS3(localFilePath, s3FilePath string, logger *log.Logger) (string, e
 			case s3.ErrCodeNoSuchBucket:
 				fallthrough
 			default:
-				logger.Println(aerr.Error())
+				log.Error(aerr.Error())
 			}
 		} else {
-			logger.Println(err.Error())
+			log.Error(err.Error())
 		}
 		return "", err
 	}
 
-	// Construct the full URL of the uploaded file
-	// fmt.Println("s3FilePath", s3FilePath)
 	s3URL := s3BaseUrl + s3FilePath
+	log.Debug("Image s3 url", s3URL)
 	return s3URL, nil
 }
 
@@ -875,52 +965,66 @@ func getJWToken() (string, error) {
 }
 
 func main() {
-	// newMarkdown()
-	initLogging(true)
-	showConfig := flag.Bool("config", false, "Show glee configuration file")
-	flag.Parse()
+	loadGlobalConfig()
 
-	// Check if the --config flag was set
-	if *showConfig {
-		printConfiguration()
-		return
-	}
-	viewTOMLFile()
-	if len(os.Args) != 2 {
-		fmt.Println("Usage: go run glee.go <markdown_file>")
-		os.Exit(1)
-	}
-
-	// Read the markdown file from the command line argument
-	filePath := os.Args[1]
-	content, err := ioutil.ReadFile(filePath)
-
+	parser := flags.NewParser(&opts, flags.Default)
+	parser.Usage = "Usage: glee <markdown_file_path>"
+	args, err := parser.Parse()
 	if err != nil {
-		log.Fatalf("Failed to read file %s: %v", filePath, err)
+		log.Fatal(err)
+	}
+	if opts.ShowConfig {
+			printConfiguration()
+			return
+		}
+
+	if opts.Help {
+		parser.WriteHelp(os.Stdout)
+		return
+	
 	}
 
-	// Convert to string
-	contentStr := string(content)
+	if opts.Debug {
+		log.SetLevel(log.DebugLevel)
+	} else {
+		log.SetLevel(log.InfoLevel)
+	}
 
-	// Find the index of the second delimiter to isolate the YAML front matter
+	log.SetFormatter(&log.TextFormatter{
+		DisableColors: false,
+		FullTimestamp: true,
+	})
+		
+	
+
+	if len(args) == 1 {
+		filePath := args[0]
+		content, err := ioutil.ReadFile(filePath)
+
+		if err != nil {
+			log.Fatalf("Failed to read file %s: %v", filePath, err)
+		}
+
+		contentStr := string(content)
+
 	index := strings.Index(contentStr, "\n---\n")
 	if index == -1 {
-		log.Fatal("Could not find YAML front matter delimiter")
+		log.Fatal("Could not find YAML delimiter")
 	}
 
-	// Extract the YAML front matter and the rest of the content
 	yamlFrontMatter := contentStr[:index]
 	markdownContent := contentStr[index+len("\n---\n"):]
-
-	// Parse the YAML front matter into a Go struct or map
+	
 	var metadata map[string]interface{}
 	err = yaml.Unmarshal([]byte(yamlFrontMatter), &metadata)
 	if err != nil {
 		log.Fatalf("Failed to parse YAML: %v", err)
 	}
 
-	// Call the postToGhost function with metadata and content
 	postToGhost(metadata, markdownContent)
+	} else {
+		log.Fatal("Please provide a markdown file.")
+	}
 }
 
 func printConfiguration() {

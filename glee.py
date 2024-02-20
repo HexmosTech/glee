@@ -233,6 +233,7 @@ def replace_image_links(post, img_map):
 
 
 def upload_feature_image(meta, token, feature_image):
+    print(feature_image, "feature_image")
     try:
         i = meta["feature_image"]
         if i:
@@ -250,6 +251,7 @@ def upload_feature_image(meta, token, feature_image):
                 image_link = upload_to_ghost(
                     token, i, image_name, feature_img_list, logging
                 )
+                print("image_link", image_link)
                 meta["feature_image"] = image_link
 
             logging.info("Uploaded feature image")
@@ -279,7 +281,7 @@ def post_to_ghost(meta, md):
     else:
         meta["feature_image"] = ""
     uploaded_images = upload_images(token, html_data, IMAGE_BACKEND)
-    replace_image_links(meta, uploaded_images)
+    # replace_image_links(meta, uploaded_images)
     post_obj = meta
 
     body = {"posts": [post_obj]}
@@ -350,7 +352,7 @@ def inject_multi_titles(meta):
 
 if __name__ == "__main__":
     post = frontmatter.load(args.markdown_file)
-    print(post.metadata)
+    # print(post.metadata)
     print('-----')
-    print(post.content)
+    # print(post.content)
     post_to_ghost(post.metadata, post.content)
