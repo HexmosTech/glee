@@ -971,9 +971,7 @@ func main() {
 	if len(version) == 0 {
 		version = "vUnset"
 	}
-	if opts.Version{
-		fmt.Println(version)
-	}
+	
 
 	parser := flags.NewParser(&opts, flags.Default)
 	parser.Usage = "Usage: glee <markdown_file_path>"
@@ -985,6 +983,11 @@ func main() {
 			printConfiguration()
 			return
 		}
+
+	if opts.Version{
+		fmt.Println(version)
+		return
+	}
 
 	if opts.Help {
 		parser.WriteHelp(os.Stdout)
