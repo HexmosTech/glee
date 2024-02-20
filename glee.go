@@ -62,6 +62,7 @@ var opts struct {
 	Debug      bool   `short:"d" long:"debug" description:"debug mode"`
 	File       string `description:"Markdown file to process"`
 	Help 	  	bool 	`short:"h" long:"help" description:"Show this help message"`
+	Version 	bool	`short:"v" long:"version" description:"Show version"`
 }
 
 var postsApiBase string
@@ -963,9 +964,16 @@ func getJWToken() (string, error) {
 
 	return signedToken, nil
 }
+var version string
 
 func main() {
 	loadGlobalConfig()
+	if len(version) == 0 {
+		version = "vUnset"
+	}
+	if opts.Version{
+		fmt.Println(version)
+	}
 
 	parser := flags.NewParser(&opts, flags.Default)
 	parser.Usage = "Usage: glee <markdown_file_path>"
