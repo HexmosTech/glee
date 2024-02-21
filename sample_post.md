@@ -1,13 +1,10 @@
 ---
 title:
-   default: new updated default title
-   hn: updated title from glee for HN
-   reddit: updated title from glee for reddit
-   # medium: title for glee for medium
-   devto: title for devto
+   default: new default title
+   hn: title from glee to HN
+   reddit: title from glee to reddit
 
-# title: default title for all time
-
+# title: hello
 authors:
 - sample@gmail.com
 tags: ["draft"]
@@ -15,10 +12,10 @@ featured: false
 status: draft
 
 custom_excerpt: This is a custom excerpt
-feature_image: ./test_images/Animhorse.gif
+feature_image: ./test_images/smiley.png
 # sidebar_toc: false
-# code_hilite_theme: vim
-slug: testing-glee
+# code_hilite_theme: solarized-dark
+slug: testing-glee-1
 ---
 
 <!-- [TOC] -->
@@ -27,7 +24,7 @@ slug: testing-glee
 
  
 
-This is  basic Markdown file with some common formatting elements.
+This is basic Markdown file with some common formatting elements.
 
 ## Headers
 
@@ -91,7 +88,7 @@ You can embed images like this:
 ![ico](./test_images/icon.ico)
 
 ### heic
-![heic](./test_images/apple.heic)
+<!-- ![heic](./test_images/apple.heic) -->
 ## Code
 
 You can include inline code using backticks (`) like `code`.
@@ -103,6 +100,23 @@ def hello_world():
     print("Hello, world!")
 ```
 
+```golang
+func getTOMLFile(configPath string) {
+	fmt.Printf("The configuration file at %s was not found.\n", configPath)
+
+	var configResponse string
+	fmt.Print("Would you like me to create the configuration file? (yes/no): ")
+	fmt.Scanln(&configResponse)
+
+	if configResponse == "yes" || configResponse == "y" {
+		// Your existing code to create the configuration file
+		// ...
+
+	} else {
+		os.Exit(0)
+	}
+}
+```
 
 ## Table 
 
