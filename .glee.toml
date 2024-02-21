@@ -26,3 +26,5 @@ ACCESS_KEY_ID = ""       # eg: UZNN442KVSB7AQTOIAW2 refer: https://objectivefs.c
 SECRET_ACCESS_KEY = ""   # eg: 2gP5NeQ2KLkcKLkcPyRqhmzY3WSK2I+GmI/T4qQ255 refer:https://objectivefs.com/howto/how-to-get-amazon-s3-keys
 
 BUCKET_NAME = ""
+
+REGION = ""

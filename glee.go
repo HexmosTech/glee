@@ -22,18 +22,16 @@ import (
 	"strings"
 	"time"
 
+	img "github.com/OhYee/goldmark-image"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/ghodss/yaml"
+	"github.com/golang-jwt/jwt"
 	"github.com/jessevdk/go-flags"
 	"github.com/pelletier/go-toml"
-
-	// "github.com/russross/blackfriday/v2"
-	img "github.com/OhYee/goldmark-image"
-	"github.com/golang-jwt/jwt"
 	log "github.com/sirupsen/logrus"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
@@ -824,7 +822,7 @@ func uploadFeatureImage(meta map[string]interface{}, token string, featureImage 
 			if err != nil {
 				log.Error("Error uploading file to S3:", err)
 			} else {
-				log.Info("File uploaded to S3 successfully.")
+				log.Info("Images uploading to S3")
 			}
 		} else {
 			log.Debug("Uploading feature image to Ghost Database")
