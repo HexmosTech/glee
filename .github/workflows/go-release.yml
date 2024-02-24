@@ -2,11 +2,11 @@ name: glee Release
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
-
+    branches:
+      - main
+      
 jobs:
   create-release:
     runs-on: ubuntu-latest
