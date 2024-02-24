@@ -55,7 +55,7 @@ Open the Command Prompt (cmd) as an administrator and execute the following comm
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/HexmosTech/glee/main/install.bat', 'install.bat'); Start-Process 'install.bat';"
 ```
 
-Alternatively, you can download the [executable (exe) file](https://github.com/HexmosTech/glee/releases/latest/download/glee_windows.exe) and then move it into the `system32` folder using the command:
+Alternatively, you can download the [executable (exe) file](https://github.com/HexmosTech/glee/releases) and then move it into the `system32` folder using the command:
 
 ```cmd
 Move-Item -Path "C:\Path\to\Downloads\glee_windows.exe" -Destination "C:\Windows\system32\glee.exe"
