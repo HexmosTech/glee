@@ -315,7 +315,7 @@ glee sample_post.md --config
 
 ## Local Testing
 
-Clone the repository and test the `glee` tool locally.
+Clone the repository, checkout to [glee-python](https://github.com/HexmosTech/glee/tree/glee-python) branch and test the `glee` tool locally.
 
 ### Option 1: Build into a binary
 
