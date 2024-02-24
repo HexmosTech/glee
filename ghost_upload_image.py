@@ -27,9 +27,7 @@ def upload_to_ghost(token, image, hash_name, blog_image_list, logging):
             hash_value = hash_name.split(".")[0]
             if hash_value in image_name:
                 logging.debug(f"The image {name} already exists and is being reused.")
-                return name
-        print("image",image)
-        print("hash_name",hash_name)    
+                return name   
         mulit_encoder = MultipartEncoder(
             fields={
                 "file": (hash_name, open(image, "rb"), "image/png"),

@@ -1,77 +1,52 @@
 #!/bin/bash
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
 
-get_file() {
-    dl_url="https://api.github.com/repos/HexmosTech/glee/releases/latest"
-    api_resp=$(wget -nv -O - $dl_url)
-}
+CONFIG_URL="https://raw.githubusercontent.com/HexmosTech/glee/main/.glee.toml"
 
-get_platform() {
-    architecture=""
-    case $(uname -m) in
-    i386) architecture="386" ;;
-    i686) architecture="386" ;;
-    x86_64) architecture="amd64" ;;
-    arm) dpkg --print-architecture | grep -q "arm64" && architecture="arm64" || architecture="arm" ;;
-    arm64) architecture="arm64" ;;
-    *) exit 1
-    esac
-}
+DEST_DIR=""
 
-get_os() {
-    the_os=""
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        echo "OS is Linux"
-        the_os="linux"
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        # Mac OSX
-        echo "OS is Mac OSX"
-        the_os="darwin"
-    elif [[ "$OSTYPE" == "cygwin" ]]; then
-        # POSIX compatibility layer and Linux environment emulation for Windows
-        echo "OS is Cygwin"
-        echo "Installer not supported yet; please use release binary"
-        exit
-    elif [[ "$OSTYPE" == "msys" ]]; then
-        # Lightweight shell and GNU utilities compiled for Windows (part of MinGW)
-        echo "OS is msys"
-        echo "Installer not supported yet; please use release binary"
-        exit
-    elif [[ "$OSTYPE" == "win32" ]]; then
-        # I'm not sure this can happen.
-        echo "OS is win32"
-        echo "Installer not supported yet; please use release binary"
-        exit
-    elif [[ "$OSTYPE" == "freebsd"* ]]; then
-        # ...
-        echo "OS is freebsd"
-        echo "Installer not supported yet; please use release binary"
-        exit
-    else
-        # Unknown.
-        echo "Error: Unknown OS"
-        exit
-    fi
-}
-
-
-get_file
-get_platform
-get_os
-search="http.*${the_os}-${architecture}.tar.gz\"$"
-echo "${search}"
-archive=$(echo "${api_resp}" | grep "${search}" | sed 's|[\"\,]*||g' | sed 's/browser_download_url://g' | xargs)
-wget -O /tmp/glee_latest.tar.gz "${archive}"
-tar -xvzf /tmp/glee_latest.tar.gz -C /tmp
-sudo rm -f /usr/local/bin/glee /usr/bin/glee
-sudo mv /tmp/glee /usr/local/bin
-
-
-if command -v glee > /dev/null 2>&1; then 
-    echo -e $"${GREEN}Successfully installed glee; Type 'glee <markdown_file>' to invoke glee${NC}"
-else 
-    echo -e $"${RED}Failure in installation; please report issue at github.com/HexmosTech/glee${NC}"
+if [ "$(uname)" == "Darwin" ]; then
+    DEST_DIR="/usr/local/bin/glee"
+    GLEE_URL="https://github.com/HexmosTech/glee/releases/v1.1.12/download/glee_mac.bin"
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    DEST_DIR="/usr/bin/glee"
+    GLEE_URL="https://github.com/HexmosTech/glee/releases/v1.1.12/download/glee_linux.bin"
+else
+    echo "Unsupported operating system. Please install glee manually from"
+    echo "https://github.com/HexmosTech/glee/releases/v1.1.12"
+    exit 1
 fi
+
+echo "Downloading glee.bin..."
+wget -O glee.bin $GLEE_URL
+
+# Check if the download was successful
+if [ $? -ne 0 ]; then
+    echo "Failed to download glee.bin. Please check your internet connection and try again."
+    exit 1
+fi
+
+echo "Moving glee.bin to $DEST_DIR..."
+sudo mv glee.bin $DEST_DIR
+
+if [ $? -ne 0 ]; then
+    echo "Failed to move glee.bin to $DEST_DIR. Please ensure you have sudo privileges."
+    exit 1
+fi
+
+sudo chmod +x $DEST_DIR
+
+config_file="$HOME/.glee.toml"
+
+if [ ! -f "$config_file" ]; then
+    echo "Downloading configuration file..."
+    wget -O "$config_file" "$CONFIG_URL"
+    echo "Installation completed successfully!"
+    echo "Add the Ghost Configuration in $config_file file for using glee."
+else
+    echo "Update completed successfully!"
+    echo "Reusing the configurations from the $config_file file."
+    
+fi
+
+

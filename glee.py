@@ -233,7 +233,6 @@ def replace_image_links(post, img_map):
 
 
 def upload_feature_image(meta, token, feature_image):
-    print(feature_image, "feature_image")
     try:
         i = meta["feature_image"]
         if i:
@@ -251,7 +250,6 @@ def upload_feature_image(meta, token, feature_image):
                 image_link = upload_to_ghost(
                     token, i, image_name, feature_img_list, logging
                 )
-                print("image_link", image_link)
                 meta["feature_image"] = image_link
 
             logging.info("Uploaded feature image")

@@ -1,4 +1,4 @@
-# glee: Dev-friendly Blogging Setup
+# glee: Dev-friendly Blogging Setup (Old Python Implementation)
 
 <div align="center">
 
