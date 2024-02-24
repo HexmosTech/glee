@@ -1021,7 +1021,7 @@ func main() {
 		version = "vUnset"
 	}
 	
-	// another()
+	another()
 	parser := flags.NewParser(&opts, flags.Default)
 	parser.Usage = "Usage: glee <markdown_file_path>"
 	args, err := parser.Parse()
