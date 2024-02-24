@@ -1,7 +1,7 @@
 
 :: Set URLs and file names
 set DOWNLOAD_URL=https://github.com/HexmosTech/glee/releases/latest/download
-set ZIP_FILE_NAME=glee-latest-windows-%PROCESSOR_ARCHITECTURE%.zip
+set ZIP_FILE_NAME=glee-v2.1.10-windows-%PROCESSOR_ARCHITECTURE%.zip
 set MD5_FILE_NAME=%ZIP_FILE_NAME%.md5
 set NEW_NAME=glee.exe
 
