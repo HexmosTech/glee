@@ -1,4 +1,3 @@
-@echo off
 
 :: Set URLs and file names
 set DOWNLOAD_URL=https://github.com/HexmosTech/glee/releases/latest/download
