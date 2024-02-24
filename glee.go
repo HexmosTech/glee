@@ -67,13 +67,11 @@ func main() {
 	parseArgs()
 	setupLogLevel()
 	loadGlobalConfig()
-	checkConfigurationsExist(log)
-
 	if opts.ShowConfig {
 		printConfiguration()
 		return
 	}
-
+	checkConfigurationsExist(log)
 	if len(args) == 1 {
 		filePath := args[0]
 		content, err := os.ReadFile(filePath)
