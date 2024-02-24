@@ -1,4 +1,4 @@
-name: glee Release
+name: glee go binary release
 
 on:
   push:

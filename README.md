@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Binary Build And Release](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/HexmosTech/glee/actions/workflows/build-and-release.yml)
+[![glee go binary release](https://github.com/HexmosTech/glee/actions/workflows/go-release.yml/badge.svg)](https://github.com/HexmosTech/glee/actions/workflows/go-release.yml)
 
 </div>
 
@@ -30,6 +30,7 @@ With glee, you can create and update [Ghost](https://ghost.org/) blogs. Since gl
 - Create and update posts with a single command
 - Support for syntax highlighting and Table of Contents
 - Collaborate with content writers in your team
+- Create various titles for your blog post
 - 100% Free and Open Source Software
 
 ## Watch Demo
@@ -299,43 +300,51 @@ When multiple team members are working simultaneously on the same Ghost blog, th
 
 ## Debugging
 
-Utilize the `--debug` option with your glee command to uncover underlying issues.
+Utilize the `--debug` or `-d` option with your glee command to uncover underlying issues.
 
 ```bash
  glee sample_post.md --debug
 ```
 
-## View Configuration
+## View Global Configuration
 
-Utilize the `--config` option with your glee command to view the glee configurations.
+Utilize the `--config` or `-c` option with your glee command to view the glee configurations.
 
 ```bash
 glee sample_post.md --config
 ```
 
+## Check Current Version
+Utilize the `--version` or `-v` option with glee command to check the current installed version.
+
 ## Local Testing
 
 Clone the repository and test the `glee` tool locally.
 
-### Option 1: Build into a binary
+### Option 1: Build into a go binary
 
-Create a local standalone executable using nuitka. run the command:
+#### Prerequisites:
+
+1. Install the Go programming language, which can be downloaded from [here](https://go.dev/doc/install).
+
+To create a local standalone executable using Go, execute the following command:
 
 ```bash
 ./installbin.sh
 ```
 
-After it's done, you can simply do:
+Once the installation is complete, you can easily run:
 
 ```bash
 glee your-post.md
 ```
 
-### Option 2: Poetry standard method
+### Option 2: Run the Go Files Directly
+
+Navigate to the project's root directory and execute the following command:
 
 ```bash
-poetry shell
-python glee.py your-post.md
+go run . your-post.md
 ```
 
 ### Blog Post about glee
@@ -344,5 +353,4 @@ python glee.py your-post.md
 
 ## Acknowledgement
 
-- The `glee` standalone single binary is created using [Nuitka](https://nuitka.net/doc/user-manual.html).
 - `glee` utilizes the [Ghost Admin API](https://ghost.org/docs/admin-api/) for interaction with the Ghost blog platform.

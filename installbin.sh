@@ -1,7 +1,6 @@
 #!/bin/bash
 
-poetry install
-poetry run python -m nuitka --onefile --follow-imports  --include-package=pygments  glee.py    
+go build -o glee.bin   
 if [ "$(uname)" == "Darwin" ]; then
     sudo mv glee.bin /usr/local/bin/glee
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
