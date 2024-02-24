@@ -3,7 +3,7 @@ for /f "delims=" %%v in ('powershell -Command "(Invoke-RestMethod -Uri 'https://
 
 :: Set URLs and file names
 set DOWNLOAD_URL=https://github.com/HexmosTech/glee/releases/latest/download
-set ZIP_FILE_NAME=glee-v%LATEST_VERSION%-windows-%PROCESSOR_ARCHITECTURE%.zip
+set ZIP_FILE_NAME=glee-%LATEST_VERSION%-windows-%PROCESSOR_ARCHITECTURE%.zip
 set MD5_FILE_NAME=%ZIP_FILE_NAME%.md5
 set NEW_NAME=glee.exe
 
