@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
@@ -146,30 +147,25 @@ func toHTML(markdown string) string {
 	return start + buf.String() + end // Return the generated HTML string
 }
 
-func initLogging(debug bool) {
-	log.SetOutput(os.Stdout)
-
-	if debug {
-		log.SetLevel(log.DebugLevel)
-	} else {
-		log.SetLevel(log.InfoLevel)
-	}
-
-	// You can customize the log formatter if needed
-	log.SetFormatter(&log.TextFormatter{
-		DisableColors: false,
-		FullTimestamp: true,
-	})
-}
 
 func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
+	
 	if config == nil {
 		log.Fatal("Configuration is not initialized. Call loadGlobalConfig to initialize it.")
 	}
 
 	globalSidebarTOC := config.GetDefault("blog-configuration.SIDEBAR_TOC", "").(bool)
-	// globalFeatured := config.GetDefault("blog-configuration.FEATURED", "").(bool)
-	// globalStatus := config.GetDefault("blog-configuration.STATUS", "").(string)
+	globalFeatured := config.GetDefault("blog-configuration.FEATURED", "").(bool)
+	globalStatus := config.GetDefault("blog-configuration.STATUS", "").(string)
+	if _, ok := meta["featured"]; !ok {
+		meta["featured"] = globalFeatured
+	}
+	if _, ok := meta["status"]; !ok {
+		meta["status"] = globalStatus
+	}
+	if meta["status"] == nil || meta["featured"] == nil {
+		log.Error("required featured and status")
+	}
 
 	defaultStyle := `pre { line-height: 125%; }
    td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -272,7 +268,11 @@ func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
 	} else {
 		meta["codeinjection_head"] = "<style> " + defaultStyle + "</style>"
 	}
-	
+	blogMetaSidebarTOC := meta["sidebar_toc"]
+
+	if blogMetaSidebarTOC!=nil {
+		globalSidebarTOC = blogMetaSidebarTOC.(bool)
+	}
 	if globalSidebarTOC {
 		if existingHead, ok := meta["codeinjection_head"].(string); ok {
 			meta["codeinjection_head"] = existingHead + sidebarTocHead
@@ -291,26 +291,76 @@ func loadGlobalConfig() {
 	var err error
 	config, err = toml.LoadFile(configPath)
 	if err != nil {
-		getTOMLFile(configPath)
+		getTomlFile(configPath)
 		os.Exit(0)
 	}
 }
 
-func getTOMLFile(configPath string) {
-	log.Error("The configuration file at %s was not found.\n", configPath)
-
-	var configResponse string
+func getTomlFile(configPath string) {
+	log.Warning("The configuration file not found at.", configPath)
+	reader := bufio.NewReader(os.Stdin)
 	log.Info("Would you like me to create the configuration file? (yes/no): ")
-	fmt.Scanln(&configResponse)
+	configResponse, _ := reader.ReadString('\n')
+	configResponse = configResponse[:len(configResponse)-1] // Remove newline
 
 	if configResponse == "yes" || configResponse == "y" {
-		// Your existing code to create the configuration file
-		// ...
+		url := "https://raw.githubusercontent.com/HexmosTech/glee/main/.glee.toml"
+		response, err := http.Get(url)
+		if err != nil {
+			log.Error("Failed to create the configuration file: %v", err)
+			return
+		}
+		defer response.Body.Close()
 
-	} else {
-		os.Exit(0)
+		if response.StatusCode ==  200 {
+			content, err := ioutil.ReadAll(response.Body)
+			if err != nil {
+				log.Error("Failed to read response content: %v", err)
+				return
+			}
+			err = ioutil.WriteFile(configPath, content,  0644)
+			if err != nil {
+				log.Error("Failed to create the configuration file: %v", err)
+				return
+			}
+			log.Info("Created the configuration file in", configPath)
+			msg := fmt.Sprintf("Include the Ghost configurations in the file located at %s", configPath)
+			log.Info(msg)
+		} else {
+			log.Error("Failed to create the configuration file")
+		}
 	}
 }
+
+
+func checkConfigurationsExist() {
+    // Helper function to check the presence of a required field
+    checkField := func(section, field, expectedType string) {
+        value, ok := config.GetPath([]string{section, field}).(string)
+        if !ok || value == "" {
+            log.Errorf("Error: Include %s %s in the configuration", section, field)
+			os.Exit(1)
+
+        }
+    }
+
+    // Check GhostConfiguration
+    checkField("ghost-configuration", "ADMIN_API_KEY", "string")
+    checkField("ghost-configuration", "GHOST_URL", "string")
+    checkField("ghost-configuration", "GHOST_VERSION", "string")
+
+    // Check image-configuration
+    checkField("image-configuration", "IMAGE_BACKEND", "string")
+
+    // Check aws-s3-configuration if IMAGE_BACKEND is "s3"
+    if imageBackend := config.GetPath([]string{"image-configuration", "IMAGE_BACKEND"}).(string); imageBackend == "s3" {
+        checkField("aws-s3-configuration", "ACCESS_KEY_ID", "string")
+        checkField("aws-s3-configuration", "SECRET_ACCESS_KEY", "string")
+        checkField("aws-s3-configuration", "BUCKET_NAME", "string")
+        checkField("aws-s3-configuration", "S3_BASE_URL", "string")
+    }
+}
+
 
 func makeRequest(headers http.Header, body map[string]interface{}, pid string, updated_at string) {
 	var method, apiEndpoint string
@@ -966,11 +1016,12 @@ var version string
 
 func main() {
 	loadGlobalConfig()
+	checkConfigurationsExist()
 	if len(version) == 0 {
 		version = "vUnset"
 	}
 	
-	another()
+	// another()
 	parser := flags.NewParser(&opts, flags.Default)
 	parser.Usage = "Usage: glee <markdown_file_path>"
 	args, err := parser.Parse()

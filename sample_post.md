@@ -8,17 +8,16 @@ title:
 authors:
 - sample@gmail.com
 tags: ["draft"]
-featured: false
+featured: true
 status: draft
 
 custom_excerpt: This is a custom excerpt
 feature_image: ./test_images/smiley.png
-# sidebar_toc: false
+sidebar_toc: true
 # code_hilite_theme: solarized-dark
 slug: testing-glee-1
 ---
 
-<!-- [TOC] -->
 
 # My Simple Markdown File
 
