@@ -247,6 +247,11 @@ Include the above code snippet in the `Admin Dashboard -> Settings -> Code Injec
 
 Remember to specify the `src` query parameter when sharing your article on platforms. For example: https://journal.hexmos.com/spam-detection-ml/?src=reddit
 
+### Download and Replace Remote Images
+
+By utilizing the `-i` or `--download-image` flag, you can conveniently download remote images referenced in the blog post. These images will be stored in the `images` directory within the current folder. Moreover, glee will automatically replace the remote image URLs (`![Markdown Logo](https://markdown-here.com/img/icon256.png)`) with their respective local paths (`![Markdown Logo](images/icon256.png)`) in the Markdown file.
+
+
 ### Specifying author
 
 The `authors` field in the markdown frontmatter can specify multiple
