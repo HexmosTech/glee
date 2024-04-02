@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -83,6 +84,26 @@ func imageToHash(image string) (string, string, error) {
 		if err != nil {
 			return "", "", err
 		}
+       // Create the "images" directory if it doesn't exist
+	   if opts.DownloadImage {
+		 if !strings.Contains(image, "https://karma-src-x02msdf8-23.s3.ap-south-1.amazonaws.com/product-menu-logo") {
+
+		err = os.MkdirAll("images", os.ModePerm)
+        if err != nil {
+            return "", "", err
+        }
+
+        // Copy the temporary file into the "images" directory
+        fileName := filepath.Base(image)
+        destination := filepath.Join("images", fileName)
+        if err := copyFile(image,tp, destination); err != nil {
+            return "", "", err
+        }
+		}
+
+
+	   }
+        
 		fileExtension = iext
 		hashValue, err = sha256Sum(tp)
 	} else {
@@ -104,4 +125,37 @@ func getTempDir() string {
 		return os.Getenv("TEMP")
 	}
 	return "/tmp/"
+}
+
+
+
+
+func copyFile(image,src, dst string) error {
+    sourceFile, err := os.Open(src)
+    if err != nil {
+        return err
+    }
+    defer sourceFile.Close()
+
+    destFile, err := os.Create(dst)
+    if err != nil {
+        return err
+    }
+    defer destFile.Close()
+	
+	 _, err = io.Copy(destFile, sourceFile)
+    
+
+    content, err := ioutil.ReadFile(filePath)
+    if err != nil {
+        return err
+    }
+    newContent := strings.Replace(string(content),image, dst, -1)
+    err = ioutil.WriteFile(filePath, []byte(newContent), 0644)
+    if err != nil {
+        return err
+    }
+	return err
+
+   
 }

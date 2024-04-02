@@ -14,6 +14,7 @@ import (
 
 var config *toml.Tree
 var log = logrus.New()
+var filePath string
 
 var opts struct {
 	ShowConfig bool   `short:"c" long:"config" description:"Show glee configuration global file"`
@@ -21,6 +22,7 @@ var opts struct {
 	File       string `description:"Markdown file to process"`
 	Help       bool   `short:"h" long:"help" description:"Show this help message"`
 	Version    bool   `short:"v" long:"version" description:"Show version"`
+	DownloadImage bool `short:"i" long:"download-image" description:"Download images from markdown file"`
 }
 
 var flagParser = flags.NewParser(&opts, flags.Default)
@@ -73,7 +75,7 @@ func main() {
 	}
 	checkConfigurationsExist(log)
 	if len(args) == 1 {
-		filePath := args[0]
+		filePath = args[0]
 		content, err := os.ReadFile(filePath)
 
 		if err != nil {
