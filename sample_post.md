@@ -11,7 +11,7 @@ tags: ["draft"]
 featured: true
 status: draft
 
-custom_excerpt: This is a custom excerpt
+excerpt: This is a  excerpt
 feature_image: ./test_images/smiley.png
 sidebar_toc: true
 # code_hilite_theme: solarized-dark

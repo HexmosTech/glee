@@ -5,6 +5,7 @@ func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
 	if config == nil {
 		log.Fatal("Configuration is not initialized. Call loadGlobalConfig to initialize it.")
 	}
+   handleExcerpt(meta)
 
 	globalSidebarTOC := config.GetDefault("blog-configuration.SIDEBAR_TOC", "").(bool)
 	globalFeatured := config.GetDefault("blog-configuration.FEATURED", "").(bool)
@@ -137,3 +138,18 @@ func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
 
 	return meta
 }
+
+func handleExcerpt(meta map[string]interface{}) {
+   // handle excerpt in the blog post.
+    if _, exists := meta["custom_excerpt"]; exists {
+        return
+    }
+    if val, ok := meta["excerpt"].(string); ok {
+        meta["custom_excerpt"] = val
+    } else {
+        meta["custom_excerpt"] = ""
+    }
+}
+
+
+
