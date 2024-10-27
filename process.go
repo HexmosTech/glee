@@ -76,16 +76,27 @@ func postToGhost(metadata map[string]interface{}, content string) {
 		metadata["feature_image"] = ""
 	}
 
+	// Upload images
 	uploadedImages, err := uploadImages(token, htmlData)
 	if err != nil {
 		log.Error("Error uploading images:", err)
 	} else {
 		log.Info("Uploaded Blog Images")
 	}
-	result, err := replaceImageLinks(metadata, uploadedImages)
+
+	// Upload Videos
+	uploadedVideos, err := uploadVideos(token, htmlData)
+	if err != nil {
+		log.Error("Error uploading videos:", err)
+	} else {
+		log.Info("Uploaded Blog Videos")
+	}
+
+	result, err := replaceMediaLinks(metadata, uploadedImages, uploadedVideos)
 	if err != nil {
 		log.Error("Error replacing image links:", err)
 	}
+	log.Info("Replaced Images ....")
 	metadata["html"] = result
 
 	postObj := metadata

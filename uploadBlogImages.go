@@ -14,7 +14,7 @@ func uploadImages(token, htmlData string) (map[string]string, error) {
 	re := regexp.MustCompile(pattern)
 
 	matches := re.FindAllStringSubmatch(buf.String(), -1)
-
+	log.Info("image matches...",matches)
 	if imageBackend == "ghost" {
 		var err error
 		blogImageList, err = getImageFromPost(htmlData)
@@ -31,6 +31,7 @@ func uploadImages(token, htmlData string) (map[string]string, error) {
 	}
 
 	for _, image := range mdlibImages {
+        log.Info("image Value...",image)
 		hashValue, imageData, err := imageToHash(image) // Implement imageToHash function
 		if err != nil {
 			log.Error("Error calculating hash:", err)

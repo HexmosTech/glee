@@ -18,8 +18,8 @@ func toHTML(markdown string) string {
 	return start + buf.String() + end
 }
 
-func replaceImageLinks(metadata map[string]interface{}, imgMap map[string]string) (string, error) {
-
+func replaceMediaLinks(metadata map[string]interface{}, imgMap, videoMap map[string]string) (string, error) {
+	log.Info("ReplaceMediaLinks....")
 	htmlStr, ok := metadata["html"].(string)
 	if !ok {
 		return "", errors.New("metadata does not contain a string under the 'html' key")
@@ -30,6 +30,7 @@ func replaceImageLinks(metadata map[string]interface{}, imgMap map[string]string
 		return "", err
 	}
 
+	// Function to replace both image and video links
 	var f func(*html.Node)
 	f = func(n *html.Node) {
 		if n.Type == html.ElementNode {
@@ -39,6 +40,12 @@ func replaceImageLinks(metadata map[string]interface{}, imgMap map[string]string
 					fallthrough
 				case n.Data == "a" && attr.Key == "href":
 					if newSrc, ok := imgMap[attr.Val]; ok {
+						n.Attr[i].Val = newSrc
+					}
+				case n.Data == "source" && attr.Key == "src":
+					log.Info("Updating Videos into the blog")
+					if newSrc, ok := videoMap[attr.Val]; ok {
+						log.Info("Adding New Src:...",newSrc)
 						n.Attr[i].Val = newSrc
 					}
 				}
