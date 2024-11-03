@@ -2,14 +2,11 @@ package main
 
 import (
 	"regexp"
-	"strings"
 )
 
 func uploadVideos(token, htmlData string) (map[string]string, error) {
-	log.Info("Uploading Blog Videos ...")
 	uploadedVideos := make(map[string]string)
 	videoBackend := config.GetDefault("image-configuration.VIDEO_BACKEND", "").(string)
-	log.Info("Videos Upload Backend...",videoBackend)
 	blogVideoList := []string{}
 
 	// Detect video tags and direct video links
@@ -17,8 +14,6 @@ func uploadVideos(token, htmlData string) (map[string]string, error) {
 	re := regexp.MustCompile(pattern)
 
 	matches := re.FindAllStringSubmatch(buf.String(), -1)
-
-	log.Info("Videos Upload Regex matches...",matches)
 
 	// Get existing videos if backend is Ghost
 	if videoBackend == "ghost" {
@@ -28,7 +23,7 @@ func uploadVideos(token, htmlData string) (map[string]string, error) {
 			log.Error("Error getting videos from post:", err)
 		}
 	}
-    
+
 	var mdlibVideos []string
 	for _, m := range matches {
 		if len(m) > 1 {
@@ -37,32 +32,18 @@ func uploadVideos(token, htmlData string) (map[string]string, error) {
 	}
 	// Upload videos and populate uploadedVideos map
 	for _, video := range mdlibVideos {
-		hashValue, videoData, err := videoToHash(video) // Implement videoToHash function
-		log.Info("Videos Value...",video)
-		log.Info("Videos Upload Hash Value...",hashValue)
-		log.Info("Videos Upload videoData...",videoData)
+		hashValue, _, err := videoToHash(video) // Implement videoToHash function
 		if err != nil {
 			log.Error("Error calculating hash:", err)
 			return nil, err
 		}
 
 		var videoLink string
-		if strings.HasPrefix(video, "http://") || strings.HasPrefix(video, "https://") {
-			if videoBackend == "s3" {
-				log.Info("Uploading video o S3...",videoLink,videoData,hashValue)
-				videoLink, err = uploadToS3(videoData, hashValue)
-					
 
-			} else if videoBackend == "ghost" {
-				videoLink, err = uploadToGhost(token, videoData, hashValue, blogVideoList)
-			}
-		} else {
-			if videoBackend == "s3" {
-				videoLink, err = uploadToS3(video, hashValue)
-				log.Info("Uploading video o S3...",videoLink,videoData,hashValue)
-			} else if videoBackend == "ghost" {
-				videoLink, err = uploadToGhost(token, video, hashValue, blogVideoList)
-			}
+		if videoBackend == "s3" {
+			videoLink, err = uploadToS3(video, hashValue)
+		} else if videoBackend == "ghost" {
+			videoLink, err = uploadToGhost(token, video, hashValue, blogVideoList)
 		}
 
 		if err != nil {
@@ -70,7 +51,7 @@ func uploadVideos(token, htmlData string) (map[string]string, error) {
 		}
 
 		uploadedVideos[video] = videoLink
-		
+
 	}
 	return uploadedVideos, nil
 }

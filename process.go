@@ -96,7 +96,6 @@ func postToGhost(metadata map[string]interface{}, content string) {
 	if err != nil {
 		log.Error("Error replacing image links:", err)
 	}
-	log.Info("Replaced Images ....")
 	metadata["html"] = result
 
 	postObj := metadata

@@ -138,3 +138,7 @@ func getTOMLFile(configPath string) {
   </li>
   <li>Milk</li>
 </ul>
+
+# suppport for local video upload 
+
+<video width="600" controls>  <source src="./createDocs.mp4" type="video/mp4"></video>

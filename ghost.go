@@ -72,7 +72,6 @@ func getJWToken() (string, error) {
 }
 
 func sha256Sum(filename string) (string, error) {
-	log.Info("Inside sha256Sum calculator...")
 	h := sha256.New()
 
 	file, err := os.Open(filename)
@@ -87,7 +86,6 @@ func sha256Sum(filename string) (string, error) {
 
 	hashInBytes := h.Sum(nil)
 	hash := hex.EncodeToString(hashInBytes)
-	log.Info("sha256Sum value...",hash)
 	return hash, nil
 }
 
