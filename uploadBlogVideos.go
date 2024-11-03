@@ -6,7 +6,7 @@ import (
 
 func uploadVideos(token, htmlData string) (map[string]string, error) {
 	uploadedVideos := make(map[string]string)
-	videoBackend := config.GetDefault("image-configuration.VIDEO_BACKEND", "").(string)
+	videoBackend := config.GetDefault("video-configuration.VIDEO_BACKEND", "").(string)
 	blogVideoList := []string{}
 
 	// Detect video tags and direct video links
