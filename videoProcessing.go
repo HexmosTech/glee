@@ -54,7 +54,7 @@ func getVideoFromPost(postJSON string) ([]string, error) {
 
 // videoToHash downloads a video from a URL, hashes its content, and saves it locally.
 func videoToHash(video string) (string, string, error) {
-	log.Info("Videos to Hash...")
+
 	var tp string // Temporary file path
 	var err error
 	var fileExtension string
@@ -94,9 +94,7 @@ func videoToHash(video string) (string, string, error) {
 		fileExtension = vext
 
 	} else {
-		log.Info("Inside Else Part name...")
 		hashValue, err = sha256Sum(video)
-		log.Info("Hash VAlue...",hashValue)
 		fileExtension = filepath.Ext(video)
 	}
 	if err != nil {
@@ -104,6 +102,5 @@ func videoToHash(video string) (string, string, error) {
 	}
 
 	videoName := hashValue + fileExtension
-	log.Info("Videos name...",videoName)
 	return videoName, tp, nil
 }
