@@ -86,7 +86,6 @@ func sha256Sum(filename string) (string, error) {
 
 	hashInBytes := h.Sum(nil)
 	hash := hex.EncodeToString(hashInBytes)
-
 	return hash, nil
 }
 

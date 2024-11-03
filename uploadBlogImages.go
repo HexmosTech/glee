@@ -14,7 +14,6 @@ func uploadImages(token, htmlData string) (map[string]string, error) {
 	re := regexp.MustCompile(pattern)
 
 	matches := re.FindAllStringSubmatch(buf.String(), -1)
-
 	if imageBackend == "ghost" {
 		var err error
 		blogImageList, err = getImageFromPost(htmlData)

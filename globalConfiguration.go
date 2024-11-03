@@ -38,6 +38,7 @@ func checkConfigurationsExist(log *logrus.Logger) {
 	checkField("ghost-configuration", "GHOST_VERSION", "string")
 
 	checkField("image-configuration", "IMAGE_BACKEND", "string")
+	checkField("video-configuration", "VIDEO_BACKEND", "string")
 
 	if imageBackend := config.GetPath([]string{"image-configuration", "IMAGE_BACKEND"}).(string); imageBackend == "s3" {
 		checkField("aws-s3-configuration", "ACCESS_KEY_ID", "string")

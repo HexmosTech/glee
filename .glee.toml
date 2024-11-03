@@ -19,6 +19,10 @@ CODE_HILITE_THEME = "monokai" #other options: native, pastie, vim, fruity
 
 IMAGE_BACKEND = "ghost"  #options: "ghost" or "s3"
 
+[video-configuration]
+
+VIDEO_BACKEND = "s3"  #options: "ghost" or "s3"
+
 [aws-s3-configuration]   #optional; Fill in if you are using "s3" as the IMAGE_BACKEND : refer: https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html
 
 ACCESS_KEY_ID = ""       # eg: UZNN442KVSB7AQTOIAW2 refer: https://objectivefs.com/howto/how-to-get-amazon-s3-keys
