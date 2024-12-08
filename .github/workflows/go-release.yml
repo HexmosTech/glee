@@ -22,6 +22,7 @@ jobs:
         prerelease: false
 
   releases-matrix:
+    permissions: write-all
     name: Release Go Binary
     runs-on: ubuntu-latest
     needs: create-release
