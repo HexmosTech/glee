@@ -7,7 +7,10 @@ on:
 
 jobs:
   create-release:
-    permissions: write-all
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
     runs-on: ubuntu-latest
     steps:
     - name: Create Release
@@ -22,7 +25,10 @@ jobs:
         prerelease: false
 
   releases-matrix:
-    permissions: write-all
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
     name: Release Go Binary
     runs-on: ubuntu-latest
     needs: create-release
