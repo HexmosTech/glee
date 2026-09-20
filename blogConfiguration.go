@@ -44,52 +44,62 @@ func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
    list-style: none;
    }
    @media (min-width: 1300px) {
-   .gh-sidebar {
-   position: absolute; 
+   .gh-toc-sidebar {
+   position: absolute;
    top: 0;
    bottom: 0;
    margin-top: 4vmin;
    margin-left: 20px;
    grid-column: wide-end / main-end; /* Place the TOC to the right of the content */
-   width: inline-block;
-   white-space: nowrap;
+   width: 400px;
+   max-width: 400px;
+   white-space: normal;
    }
    .gh-toc-container {
    position: sticky; /* On larger screens, TOC will stay in the same spot on the page */
    top: 4vmin;
    }
+   .gh-toc a.toc-link {
+   display: block;
+   overflow-wrap: break-word;
+   word-break: break-word;
+   white-space: normal;
+   line-height: 1.35;
+   padding-left: 12px;
+   }
    }
    .gh-toc .is-active-link::before {
    background-color: var(--ghost-accent-color); /* Defines TOC accent color based on Accent color set in Ghost Admin */
-   } 
+   }
 </style>`
 	sidebarTocFooter := `<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.12.3/tocbot.min.js"></script>
 <script>
    const parent = document.querySelector(".gh-content.gh-canvas");
+   if (parent && !document.querySelector(".gh-toc-sidebar")) {
    // Create the <aside> element
    const asideElement = document.createElement("aside");
-   asideElement.setAttribute("class", "gh-sidebar");
+   asideElement.setAttribute("class", "gh-toc-sidebar");
    //asideElement.style.zIndex = 0; // sent to back so it doesn't show on top of images
-   
+
    // Create the container div for title and TOC
    const containerElement = document.createElement("div");
    containerElement.setAttribute("class", "gh-toc-container");
-   
+
    // Create the title element
    const titleElement = document.createElement("div");
    titleElement.textContent = "Table of Contents";
    titleElement.style.fontWeight = "bold";
    containerElement.appendChild(titleElement);
-   
+
    // Create the <div> element for TOC
    const divElement = document.createElement("div");
    divElement.setAttribute("class", "gh-toc");
    containerElement.appendChild(divElement);
-   
+
    // Append the <div> element to the <aside> element
    asideElement.appendChild(containerElement);
    parent.insertBefore(asideElement, parent.firstChild);
-   
+
    tocbot.init({
        // Where to render the table of contents.
        tocSelector: '.gh-toc',
@@ -100,19 +110,20 @@ func addBlogConfigurations(meta map[string]interface{}) map[string]interface{} {
        // Ensure correct positioning
        hasInnerContainers: true,
    });
-   
+
    // Get the table of contents element
    const toc = document.querySelector(".gh-toc");
-   const sidebar = document.querySelector(".gh-sidebar");
-   
+   const sidebar = document.querySelector(".gh-toc-sidebar");
+
    // Check the number of items in the table of contents
    const tocItems = toc.querySelectorAll('li').length;
-   
+
    // Only show the table of contents if it has more than 5 items
    if (tocItems > 2) {
      sidebar.style.display = 'block';
    } else {
      sidebar.style.display = 'none';
+   }
    }
 </script>`
 
