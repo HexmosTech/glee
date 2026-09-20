@@ -102,8 +102,43 @@ get_os() {
 get_file
 get_platform
 get_os
-search="http.*${the_os}-${architecture}.tar.gz\"$"
-archive=$(echo "${api_resp}" | grep "${search}" | sed 's|[\"\,]*||g' | sed 's/browser_download_url://g' | xargs)
+suffix="${the_os}-${architecture}.tar.gz"
+
+# find_asset_url <suffix>: extracts the browser_download_url whose value ends
+# in <suffix> (e.g. "linux-amd64.tar.gz", not "...tar.gz.md5"). The old
+# implementation grepped with an end-of-line anchor, which only worked when
+# GitHub pretty-printed one JSON field per line; GitHub now returns the API
+# response as a single minified line, so that anchor never matched and the
+# script silently ended up with an empty URL. jq/python3 parse the JSON
+# properly regardless of formatting; the final fallback normalizes commas to
+# newlines to approximate one-field-per-line before matching.
+find_asset_url() {
+    local suf="$1"
+    if command -v jq > /dev/null 2>&1; then
+        echo "${api_resp}" | jq -r --arg suf "$suf" \
+            '.assets[]? | select(.browser_download_url | endswith($suf)) | .browser_download_url' \
+            | head -n1
+    elif command -v python3 > /dev/null 2>&1; then
+        echo "${api_resp}" | python3 -c '
+import json, sys
+suf = sys.argv[1]
+try:
+    data = json.load(sys.stdin)
+except ValueError:
+    sys.exit(0)
+for asset in data.get("assets", []):
+    url = asset.get("browser_download_url", "")
+    if url.endswith(suf):
+        print(url)
+        break
+' "$suf"
+    else
+        echo "${api_resp}" | tr ',' '\n' | grep "\"browser_download_url\":\"[^\"]*${suf}\"" \
+            | sed -E 's/.*"browser_download_url":"([^"]*)".*/\1/' | head -n1
+    fi
+}
+
+archive=$(find_asset_url "$suffix")
 
 if [ -z "$archive" ]; then
     echo -e "${RED}Could not find a release asset matching ${the_os}-${architecture}.${NC}"
@@ -120,10 +155,12 @@ fi
 
 tar -xzf /tmp/glee_latest.tar.gz -C /tmp
 sudo rm -f /usr/local/bin/glee /usr/bin/glee
-sudo mv /tmp/glee /usr/local/bin
+if ! sudo mv /tmp/glee /usr/local/bin/glee; then
+    echo -e "${RED}Could not move glee into /usr/local/bin (sudo failed or was denied).${NC}"
+    exit 1
+fi
 
-
-if command -v glee > /dev/null 2>&1; then
+if [ -x /usr/local/bin/glee ] && command -v glee > /dev/null 2>&1; then
     echo -e "${GREEN}Successfully installed glee; Type 'glee <markdown_file>' to invoke glee${NC}"
 else
     echo -e "${RED}Failure in installation; please report issue at github.com/HexmosTech/glee${NC}"
